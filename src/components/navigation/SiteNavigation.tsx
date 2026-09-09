@@ -101,6 +101,13 @@ export function SiteNavigation() {
             </div>
 
             <Link
+              href="/#artist"
+              className="hover:text-white transition-colors duration-200 py-2"
+            >
+              ARTISTS
+            </Link>
+
+            <Link
               href="/#studio"
               className="hover:text-white transition-colors duration-200 py-2"
             >
@@ -200,9 +207,16 @@ export function SiteNavigation() {
                   BELLY PIERCING
                 </Link>
                 <Link
-                  href="/#studio"
+                  href="/#artist"
                   onClick={() => setMobileMenuOpen(false)}
                   className="text-neutral-400 hover:text-white transition-colors pt-4 border-t border-neutral-900"
+                >
+                  RESIDENT ARTISTS
+                </Link>
+                <Link
+                  href="/#studio"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-neutral-400 hover:text-white transition-colors"
                 >
                   THE STUDIO & TEAM
                 </Link>

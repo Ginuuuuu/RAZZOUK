@@ -19,7 +19,7 @@ export function TeamSection() {
         {/* Section Header */}
         <div className="max-w-3xl mb-16 sm:mb-24">
           <div className="flex items-center gap-3 text-neutral-400 text-[10px] sm:text-xs tracking-[0.3em] uppercase mb-4">
-            <span className="font-accent text-neutral-400 text-lg">chapter 06</span>
+            <span className="font-accent text-neutral-400 text-lg">chapter 07</span>
             <span>·</span>
             <span>ATELIER RESIDENTS</span>
           </div>

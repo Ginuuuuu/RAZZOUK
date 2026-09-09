@@ -3,6 +3,7 @@ import { Hero02Process } from "@/components/hero/Hero02Process";
 import { Hero03Colour } from "@/components/hero/Hero03Colour";
 import { Hero04Private } from "@/components/hero/Hero04Private";
 import { Hero05Piercing } from "@/components/hero/Hero05Piercing";
+import { ArtistSection } from "@/components/sections/ArtistSection";
 import { TeamSection } from "@/components/sections/TeamSection";
 import { ReviewsSection } from "@/components/sections/ReviewsSection";
 
@@ -24,10 +25,13 @@ export default function Home() {
       {/* 05: Piercing & Jewelry Precision Exhibition Preview */}
       <Hero05Piercing />
 
-      {/* 06: Atelier Residents & Team Roster */}
+      {/* 06: Interactive 3D Artist Sphere Archive */}
+      <ArtistSection />
+
+      {/* 07: Atelier Residents & Team Roster */}
       <TeamSection />
 
-      {/* 07: Editorial Customer Reviews & Testimonials */}
+      {/* 08: Editorial Customer Reviews & Testimonials */}
       <ReviewsSection />
     </div>
   );
