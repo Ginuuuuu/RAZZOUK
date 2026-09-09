@@ -53,25 +53,32 @@ export function ArtistFloatingField({ images, className = "" }: ArtistFloatingFi
   const isCanvasPanning = useRef<boolean>(false);
   const canvasPanStart = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
-  // Initialize nodes distributed across the entire rectangular canvas
+  // Initialize nodes distributed across the entire full-bleed canvas
   const initNodes = useCallback(() => {
     if (!containerRef.current || images.length === 0) return;
     const rect = containerRef.current.getBoundingClientRect();
-    const width = rect.width || 1200;
-    const height = rect.height || 680;
+    const width = rect.width || (typeof window !== "undefined" ? window.innerWidth : 1440);
+    const height = rect.height || 880;
 
     // Node size: smaller, sleek, compact (~68px to 84px on desktop, ~52px to 64px on mobile)
     const isMobile = width < 640;
-    const baseSize = isMobile ? 56 : 76;
+    const isTablet = width >= 640 && width < 1024;
+    const baseSize = isMobile ? 54 : isTablet ? 66 : 76;
 
     const count = images.length;
     // Calculate grid columns and rows to distribute evenly edge-to-edge
     const aspect = width / height;
-    const cols = Math.ceil(Math.sqrt(count * aspect));
+    const cols = Math.max(isMobile ? 4 : 7, Math.ceil(Math.sqrt(count * aspect * 1.12)));
     const rows = Math.ceil(count / cols);
 
-    const cellW = (width - baseSize * 1.5) / Math.max(1, cols);
-    const cellH = (height - baseSize * 1.5) / Math.max(1, rows);
+    const padX = isMobile ? 16 : 48;
+    const padY = 32;
+
+    const usableWidth = Math.max(300, width - padX * 2 - baseSize);
+    const usableHeight = Math.max(300, height - padY * 2 - baseSize);
+
+    const cellW = usableWidth / Math.max(1, cols - 1);
+    const cellH = usableHeight / Math.max(1, rows - 1);
 
     const newNodes: NodeState[] = images.map((image, idx) => {
       const col = idx % cols;
@@ -85,20 +92,20 @@ export function ArtistFloatingField({ images, className = "" }: ArtistFloatingFi
       const sizeVariation = ((idx % 5) - 2) * (isMobile ? 3 : 5);
       const size = Math.round(baseSize + sizeVariation);
 
-      const x = Math.max(10, Math.min(width - size - 10, col * cellW + cellW * 0.5 + jitterX));
-      const y = Math.max(10, Math.min(height - size - 10, row * cellH + cellH * 0.5 + jitterY));
+      const x = Math.max(padX, Math.min(width - size - padX, padX + col * cellW + jitterX));
+      const y = Math.max(padY, Math.min(height - size - padY, padY + row * cellH + jitterY));
 
       return {
         id: image.id,
         image,
         x,
         y,
-        vx: (Math.random() - 0.5) * 0.8,
-        vy: (Math.random() - 0.5) * 0.8,
+        vx: (Math.random() - 0.5) * 0.7,
+        vy: (Math.random() - 0.5) * 0.7,
         size,
         phaseX: Math.random() * Math.PI * 2,
         phaseY: Math.random() * Math.PI * 2,
-        speed: 0.0012 + Math.random() * 0.0016,
+        speed: 0.001 + Math.random() * 0.0015,
         isDragging: false,
       };
     });
@@ -155,21 +162,22 @@ export function ArtistFloatingField({ images, className = "" }: ArtistFloatingFi
         node.x += node.vx * (dt / 16);
         node.y += node.vy * (dt / 16);
 
-        // 3. Boundary collision with elastic bounce
-        const pad = 8;
-        if (node.x < pad) {
-          node.x = pad;
+        // 3. Boundary collision with elastic bounce across full width
+        const padX = 20;
+        const padY = 16;
+        if (node.x < padX) {
+          node.x = padX;
           node.vx = Math.abs(node.vx) * 0.75 + 0.2;
-        } else if (node.x > width - node.size - pad) {
-          node.x = width - node.size - pad;
+        } else if (node.x > width - node.size - padX) {
+          node.x = width - node.size - padX;
           node.vx = -Math.abs(node.vx) * 0.75 - 0.2;
         }
 
-        if (node.y < pad) {
-          node.y = pad;
+        if (node.y < padY) {
+          node.y = padY;
           node.vy = Math.abs(node.vy) * 0.75 + 0.2;
-        } else if (node.y > height - node.size - pad) {
-          node.y = height - node.size - pad;
+        } else if (node.y > height - node.size - padY) {
+          node.y = height - node.size - padY;
           node.vy = -Math.abs(node.vy) * 0.75 - 0.2;
         }
 
@@ -262,8 +270,9 @@ export function ArtistFloatingField({ images, className = "" }: ArtistFloatingFi
       dragDistanceRef.current += Math.hypot(e.movementX, e.movementY);
 
       const rect = containerRef.current.getBoundingClientRect();
-      const newX = Math.max(0, Math.min(rect.width - node.size, dragStartPos.current.nodeX + dx));
-      const newY = Math.max(0, Math.min(rect.height - node.size, dragStartPos.current.nodeY + dy));
+      const pad = 16;
+      const newX = Math.max(pad, Math.min(rect.width - node.size - pad, dragStartPos.current.nodeX + dx));
+      const newY = Math.max(pad, Math.min(rect.height - node.size - pad, dragStartPos.current.nodeY + dy));
 
       node.x = newX;
       node.y = newY;
@@ -285,11 +294,12 @@ export function ArtistFloatingField({ images, className = "" }: ArtistFloatingFi
       const dx = e.movementX;
       const dy = e.movementY;
       const rect = containerRef.current.getBoundingClientRect();
+      const pad = 16;
 
       // Pan all nodes with the canvas drag
       nodesRef.current.forEach((n) => {
-        n.x = Math.max(0, Math.min(rect.width - n.size, n.x + dx * 0.8));
-        n.y = Math.max(0, Math.min(rect.height - n.size, n.y + dy * 0.8));
+        n.x = Math.max(pad, Math.min(rect.width - n.size - pad, n.x + dx * 0.8));
+        n.y = Math.max(pad, Math.min(rect.height - n.size - pad, n.y + dy * 0.8));
         n.vx += dx * 0.12;
         n.vy += dy * 0.12;
       });
@@ -329,28 +339,28 @@ export function ArtistFloatingField({ images, className = "" }: ArtistFloatingFi
 
   return (
     <>
-      {/* Rectangular Interactive Field Container */}
+      {/* Full-width Edge-to-Edge Interactive Canvas without rectangular outline */}
       <div
         ref={containerRef}
         onPointerMove={handlePointerMove}
         onPointerDown={handleCanvasPointerDown}
         onPointerUp={handleCanvasPointerUp}
-        className={`relative w-full h-[600px] sm:h-[660px] md:h-[720px] lg:h-[760px] overflow-hidden rounded-2xl bg-neutral-950/70 border border-neutral-900/90 select-none shadow-2xl backdrop-blur-sm cursor-grab active:cursor-grabbing ${className}`}
+        className={`relative w-full h-[720px] sm:h-[800px] md:h-[880px] lg:h-[940px] overflow-hidden bg-black select-none cursor-grab active:cursor-grabbing ${className}`}
         style={{ touchAction: "none" }}
       >
         {/* Subtle Ambient Studio Background Grid */}
         <div
-          className="absolute inset-0 pointer-events-none opacity-[0.04]"
+          className="absolute inset-0 pointer-events-none opacity-[0.035]"
           style={{
             backgroundImage:
               "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
-            backgroundSize: "32px 32px",
+            backgroundSize: "36px 36px",
           }}
         />
 
-        {/* Ambient Glow Gradient */}
-        <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black via-transparent to-black/60" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70%] h-[60%] rounded-full bg-[#7F1D2D]/10 blur-3xl pointer-events-none" />
+        {/* Ambient Glow Gradient across full canvas */}
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-black via-transparent to-black" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] h-[75%] rounded-full bg-[#7F1D2D]/12 blur-3xl pointer-events-none" />
 
         {/* Interactive Avatars distributed across rectangular space */}
         {isClient &&
@@ -406,7 +416,7 @@ export function ArtistFloatingField({ images, className = "" }: ArtistFloatingFi
           ))}
 
         {/* Subtle Canvas Corner Coordinates Watermark */}
-        <div className="absolute bottom-4 left-6 pointer-events-none text-[9px] font-mono tracking-[0.25em] text-neutral-400 uppercase">
+        <div className="absolute bottom-4 left-6 sm:left-10 md:left-14 pointer-events-none text-[9px] font-mono tracking-[0.25em] text-neutral-400 uppercase">
           RAZZOUK ATELIER COLLECTIVE · {images.length} ACTIVE RESIDENTS & CRAFTSMEN
         </div>
       </div>
