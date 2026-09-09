@@ -2,15 +2,11 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { ArrowUp, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { InquiryModal } from "@/components/navigation/InquiryModal";
 
 export function SiteFooter() {
   const [inquiryOpen, setInquiryOpen] = useState(false);
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
 
   return (
     <>
@@ -119,19 +115,9 @@ export function SiteFooter() {
             </div>
           </div>
 
-          {/* Bottom Bar: Copyright & Compact Back to Top */}
-          <div className="pt-8 border-t border-neutral-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] tracking-[0.2em] uppercase text-neutral-400">
+          {/* Bottom Bar: Copyright */}
+          <div className="pt-8 border-t border-neutral-900 flex items-center justify-between text-[10px] tracking-[0.2em] uppercase text-neutral-400">
             <p>© 2026 Razzouk — All rights reserved.</p>
-
-            <button
-              type="button"
-              onClick={scrollToTop}
-              className="group inline-flex items-center gap-2 hover:text-white transition-colors focus:outline-none"
-              aria-label="Back to top"
-            >
-              <span>Back to Top</span>
-              <ArrowUp className="w-3.5 h-3.5 transition-transform duration-300 group-hover:-translate-y-1" />
-            </button>
           </div>
         </div>
       </footer>
