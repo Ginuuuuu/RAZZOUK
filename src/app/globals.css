@@ -30,14 +30,13 @@ html {
   background-color: #000000;
   color: #ffffff;
   font-family: var(--font-body), "Nunito Sans", sans-serif;
-  scroll-behavior: smooth;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
   background-color: #000000;
   color: #ffffff;
-  overflow-x: hidden;
+  overflow-x: clip;
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;
