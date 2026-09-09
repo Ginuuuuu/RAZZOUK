@@ -48,7 +48,7 @@ const STEPS: StepConfig[] = [
     topPct: "60%",
   },
   {
-    word: "SCRATCH",
+    word: "SCRATCHING",
     note: "The decisive mark — permanence takes root in skin",
     stepNum: "05",
     isWine: true,
