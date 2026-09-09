@@ -14,11 +14,11 @@ export function Hero04Private() {
     offset: ["start start", "end end"],
   });
 
-  // Zooms continuously OUT: starts at 2.5x, reaches full composition at 1.0x
-  const scale = useTransform(scrollYProgress, [0, 1], [2.5, 1.0]);
+  // Zooms smoothly out from 1.75x to 1.0x to showcase full intimate portrait and arm tattoos
+  const scale = useTransform(scrollYProgress, [0, 1], [1.75, 1.0]);
 
   // Asymmetric typography reveal
-  const textOpacity = useTransform(scrollYProgress, [0, 0.18, 0.85, 1], [0.5, 1, 1, 0.8]);
+  const textOpacity = useTransform(scrollYProgress, [0, 0.18, 0.85, 1], [0.5, 1, 1, 0.85]);
   const textY = useTransform(scrollYProgress, [0, 0.25], [30, 0]);
 
   return (
@@ -29,12 +29,12 @@ export function Hero04Private() {
     >
       {/* Sticky Viewport Stage */}
       <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between p-6 sm:p-10 md:p-14 lg:p-20">
-        {/* Background Zooming Image (hero04.jpg) */}
-        <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
+        {/* Background Zooming Image (hero04.jpg) — Fully Visible */}
+        <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
           <motion.div
             style={{
               scale,
-              transformOrigin: "60% 28%", // Focus on the intimate direct gaze & shoulder contour
+              transformOrigin: "68% 36%", // Focus on her gaze and sleeve tattoo contour
             }}
             className="w-full h-full relative"
           >
@@ -42,18 +42,21 @@ export function Hero04Private() {
               src="/assets/hero04.jpg"
               alt="Private Studio Tattoo Narrative"
               fill
+              priority
               sizes="100vw"
-              className="object-cover"
-              quality={90}
+              className="object-cover object-[68%_36%]"
+              quality={95}
             />
           </motion.div>
 
-          {/* Intimate dark vignettes that carve out negative space on the right & bottom */}
-          <div className="absolute inset-0 bg-gradient-to-l from-black/90 via-black/40 to-transparent pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/60 pointer-events-none" />
+          {/* Subtle ambient darkening — right side where subject is remains completely clear */}
+          <div className="absolute inset-0 bg-black/20 pointer-events-none" />
+          {/* Left-side subtle gradient for clean text readability over pillow/negative space */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/40 to-transparent w-full md:w-3/5 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/40 pointer-events-none" />
         </div>
 
-        {/* Top Header Information — Distinct Right Alignment */}
+        {/* Top Header Information — Left & Right */}
         <div className="relative z-10 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="font-mono text-[10px] sm:text-xs text-neutral-400 tracking-[0.3em] uppercase">
@@ -70,10 +73,10 @@ export function Hero04Private() {
           </span>
         </div>
 
-        {/* Editorial Content Block — Centered/Offset Right Layout */}
+        {/* Editorial Content Block — Positioned on Left over negative space so subject on right is 100% visible */}
         <motion.div
           style={{ opacity: textOpacity, y: textY }}
-          className="relative z-10 max-w-2xl my-auto py-8 lg:ml-auto lg:text-right pointer-events-auto"
+          className="relative z-10 max-w-2xl my-auto py-8 pointer-events-auto"
         >
           <div className="space-y-4 sm:space-y-6">
             <div className="inline-block">
@@ -87,12 +90,12 @@ export function Hero04Private() {
               <span className="font-medium text-[#E5E5E5]">TATTOOS</span>
             </h2>
 
-            <p className="font-body text-sm sm:text-base md:text-lg text-neutral-300 tracking-[0.15em] font-light max-w-lg leading-relaxed lg:ml-auto">
+            <p className="font-body text-sm sm:text-base md:text-lg text-neutral-300 tracking-[0.15em] font-light max-w-lg leading-relaxed">
               A private space. A personal process. A piece made entirely yours without compromise.
             </p>
 
             {/* CTA Link */}
-            <div className="pt-4 flex lg:justify-end">
+            <div className="pt-4 flex">
               <Link
                 href="/works/private-tattoos"
                 className="group inline-flex items-center gap-4 text-xs sm:text-sm tracking-[0.25em] uppercase font-medium text-white hover:text-neutral-300 transition-colors py-2 border-b border-white hover:border-neutral-400"
