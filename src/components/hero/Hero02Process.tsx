@@ -11,6 +11,7 @@ interface StepConfig {
   isWine?: boolean;
   start: number;
   end: number;
+  topPct: string; // Vertical anchor percentage
 }
 
 const STEPS: StepConfig[] = [
@@ -20,6 +21,7 @@ const STEPS: StepConfig[] = [
     stepNum: "01",
     start: 0.00,
     end: 0.20,
+    topPct: "10%",
   },
   {
     word: "WE DESIGN",
@@ -27,6 +29,7 @@ const STEPS: StepConfig[] = [
     stepNum: "02",
     start: 0.20,
     end: 0.40,
+    topPct: "27%",
   },
   {
     word: "WE SKETCH",
@@ -34,6 +37,7 @@ const STEPS: StepConfig[] = [
     stepNum: "03",
     start: 0.40,
     end: 0.60,
+    topPct: "44%",
   },
   {
     word: "WE START",
@@ -41,6 +45,7 @@ const STEPS: StepConfig[] = [
     stepNum: "04",
     start: 0.60,
     end: 0.80,
+    topPct: "61%",
   },
   {
     word: "SCRATCH",
@@ -49,63 +54,63 @@ const STEPS: StepConfig[] = [
     isWine: true,
     start: 0.80,
     end: 1.00,
+    topPct: "78%",
   },
 ];
 
-function PhraseLayer({
+function StackedWordRow({
   step,
   progress,
 }: {
   step: StepConfig;
   progress: MotionValue<number>;
 }) {
-  const { start, end, isWine } = step;
+  const { word, stepNum, isWine, start, end, topPct } = step;
 
-  // The primary effect: starts HUGE (scale 3.5), continuously zooms OUT to scale 1.0
-  const scale = useTransform(progress, [start, end], [3.5, 1.0]);
+  // Zoom-out: starts HUGE (5.0), shrinks down to 1.0 as scroll progresses through its range
+  // Once finished (progress >= end), scale clamps permanently to 1.0
+  const scale = useTransform(progress, [start, end], [5.0, 1.0]);
 
-  // Opacity transitions cleanly: fades in fast at start, stays prominent, fades out as next takes over
-  // Last step "SCRATCH" remains visible once reached
+  // Opacity: 0 before start. Enters quickly at start, then REMAINS 1.0 permanently!
+  // It NEVER disappears after completion — all completed words form the final stack!
   const opacity = useTransform(
     progress,
-    isWine
-      ? [start, Math.min(start + 0.03, 0.85), 1.0]
-      : [start, start + 0.02, end - 0.03, end],
-    isWine
-      ? [0, 1, 1]
-      : [0, 1, 1, 0]
+    [start, Math.min(start + 0.04, end)],
+    [0.0, 1.0]
   );
 
   return (
     <motion.div
       style={{
+        top: topPct,
         scale,
         opacity,
+        transformOrigin: "center center",
       }}
-      className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 pointer-events-none select-none"
+      className="absolute left-0 right-0 w-full flex items-center justify-center pointer-events-none select-none px-4"
     >
-      {/* Editorial step tag */}
-      <div className="mb-4 sm:mb-6 flex items-center gap-3">
-        <span className="font-mono text-[10px] sm:text-xs text-neutral-400 tracking-[0.3em]">
-          STAGE {step.stepNum} / 05
+      <div className="flex items-baseline justify-center gap-3 sm:gap-6 w-full max-w-6xl mx-auto">
+        {/* Subtle stage numeral tag */}
+        <span className="font-mono text-[9px] sm:text-xs text-neutral-400 tracking-[0.25em] opacity-70 hidden md:inline-block">
+          {stepNum}
+        </span>
+
+        {/* The Word */}
+        <h2
+          className={`font-heading font-black tracking-[-0.03em] uppercase leading-none whitespace-nowrap text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-8xl transition-colors duration-300 ${
+            isWine
+              ? "text-[#7F1D2D] drop-shadow-[0_0_45px_rgba(127,29,45,0.55)]"
+              : "text-white/95 drop-shadow-[0_2px_20px_rgba(0,0,0,0.8)]"
+          }`}
+        >
+          {word}
+        </h2>
+
+        {/* Mirror indicator on right for balance */}
+        <span className="font-mono text-[9px] sm:text-xs text-neutral-400 tracking-[0.25em] opacity-70 hidden md:inline-block">
+          {isWine ? "END" : "05"}
         </span>
       </div>
-
-      {/* Oversized typography that zooms out */}
-      <h2
-        className={`font-heading font-black tracking-[-0.03em] uppercase leading-[0.85] whitespace-nowrap text-[13vw] sm:text-[14vw] md:text-[15vw] lg:text-[16vw] transition-colors duration-300 ${
-          step.isWine
-            ? "text-[#7F1D2D] drop-shadow-[0_0_40px_rgba(127,29,45,0.4)]"
-            : "text-white"
-        }`}
-      >
-        {step.word}
-      </h2>
-
-      {/* Supporting poetic note */}
-      <p className="font-body text-xs sm:text-sm md:text-base text-neutral-400 tracking-[0.25em] uppercase mt-6 sm:mt-8 max-w-xl px-4 leading-relaxed">
-        {step.note}
-      </p>
     </motion.div>
   );
 }
@@ -118,13 +123,8 @@ export function Hero02Process() {
     offset: ["start start", "end end"],
   });
 
-  // Layered background image progressively fades in as we approach creation
-  const imgOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.4, 0.8, 1],
-    [0.15, 0.35, 0.55, 0.75]
-  );
-  const imgScale = useTransform(scrollYProgress, [0, 1], [1.1, 1.0]);
+  // Background image subtly moves and stays visible
+  const bgScale = useTransform(scrollYProgress, [0, 1], [1.05, 1.0]);
 
   // Overall section progress bar indicator
   const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
@@ -138,13 +138,10 @@ export function Hero02Process() {
     >
       {/* Sticky Viewport Stage */}
       <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
-        {/* Layered Background Image (hero02.jpg) */}
+        {/* Layer 0: Background Image (hero02.jpg) — Clearly visible throughout */}
         <motion.div
-          style={{
-            opacity: imgOpacity,
-            scale: imgScale,
-          }}
-          className="absolute inset-0 w-full h-full pointer-events-none"
+          style={{ scale: bgScale }}
+          className="absolute inset-0 w-full h-full pointer-events-none z-0"
         >
           <Image
             src="/assets/hero02.jpg"
@@ -152,27 +149,27 @@ export function Hero02Process() {
             fill
             sizes="100vw"
             className="object-cover object-center"
-            quality={85}
+            quality={90}
           />
-          {/* Grayscale/Contrast overlays to ensure typography supremacy */}
-          <div className="absolute inset-0 bg-black/75" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.85)_100%)]" />
+
+          {/* Layer 1: Subtle cinematic dark overlay (45%) — keeps image clearly visible */}
+          <div className="absolute inset-0 bg-black/45 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/60 pointer-events-none" />
         </motion.div>
 
-        {/* Studio Section Watermark */}
-        <div className="absolute top-10 left-6 sm:left-10 md:left-14 z-20 flex items-center gap-3 text-neutral-400 text-[10px] tracking-[0.3em] uppercase">
-          <span className="font-accent text-neutral-400 text-lg">chapter 02</span>
+        {/* Layer 3: Studio Section Watermark (Top Left) */}
+        <div className="absolute top-8 sm:top-10 left-6 sm:left-10 md:left-14 z-30 flex items-center gap-3 text-neutral-400 text-[10px] sm:text-xs tracking-[0.3em] uppercase pointer-events-none">
+          <span className="font-accent text-neutral-400 text-lg sm:text-xl">chapter 02</span>
           <span>·</span>
           <span>THE PROCESS</span>
         </div>
 
-        {/* Progress Tracker Bar */}
-        <div className="absolute top-10 right-6 sm:right-10 md:right-14 z-20 flex items-center gap-3">
-          <div className="w-24 sm:w-32 h-[2px] bg-neutral-900 overflow-hidden">
+        {/* Layer 3: Progress Tracker Bar (Top Right) */}
+        <div className="absolute top-8 sm:top-10 right-6 sm:right-10 md:right-14 z-30 flex items-center gap-3 pointer-events-none">
+          <div className="w-24 sm:w-36 h-[2px] bg-white/20 overflow-hidden rounded-full">
             <motion.div
               style={{ width: progressWidth }}
-              className="h-full bg-neutral-400"
+              className="h-full bg-white"
             />
           </div>
           <span className="text-[10px] font-mono tracking-widest text-neutral-400">
@@ -180,10 +177,10 @@ export function Hero02Process() {
           </span>
         </div>
 
-        {/* 5 Sequential Typography Layers */}
-        <div className="relative z-10 w-full h-full flex items-center justify-center">
+        {/* Layer 2: The Continuous Typographic Stack */}
+        <div className="relative z-20 w-full h-full max-w-7xl mx-auto pointer-events-none">
           {STEPS.map((step) => (
-            <PhraseLayer
+            <StackedWordRow
               key={step.word}
               step={step}
               progress={scrollYProgress}
@@ -191,8 +188,8 @@ export function Hero02Process() {
           ))}
         </div>
 
-        {/* Bottom subtle guidance */}
-        <div className="absolute bottom-8 z-20 text-center w-full text-neutral-400 text-[10px] tracking-[0.25em] uppercase">
+        {/* Layer 3: Bottom subtle guidance */}
+        <div className="absolute bottom-6 sm:bottom-8 z-30 text-center w-full text-neutral-400 text-[9px] sm:text-[10px] tracking-[0.25em] uppercase pointer-events-none">
           Continuous scroll controls velocity
         </div>
       </div>
