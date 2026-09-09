@@ -151,36 +151,16 @@ export const SphereImageGrid: React.FC<SphereImageGridProps> = ({
   const generateSpherePositions = useCallback((): SphericalPosition[] => {
     const positions: SphericalPosition[] = [];
     const imageCount = images.length;
+    if (imageCount === 0) return positions;
 
-    // Use Fibonacci sphere distribution for even coverage
-    const goldenRatio = (1 + Math.sqrt(5)) / 2;
-    const angleIncrement = 2 * Math.PI / goldenRatio;
+    // Use standard Fibonacci sphere distribution for uniform coverage
+    const goldenAngle = Math.PI * (3 - Math.sqrt(5)); // ~2.39996 rad
 
     for (let i = 0; i < imageCount; i++) {
-      // Fibonacci sphere distribution
-      const t = i / imageCount;
-      const inclination = Math.acos(1 - 2 * t);
-      const azimuth = angleIncrement * i;
-
-      // Convert to degrees and focus on front hemisphere
-      let phi = inclination * (180 / Math.PI);
-      let theta = (azimuth * (180 / Math.PI)) % 360;
-
-      // Better pole coverage - reach poles but avoid extreme mathematical issues
-      const poleBonus = Math.pow(Math.abs(phi - 90) / 90, 0.6) * 35; // Moderate boost toward poles
-      if (phi < 90) {
-        phi = Math.max(5, phi - poleBonus); // Reach closer to top pole (15° minimum)
-      } else {
-        phi = Math.min(175, phi + poleBonus); // Reach closer to bottom pole (165° maximum)
-      }
-
-      // Map to fuller vertical range - covers poles but avoids extremes
-      phi = 15 + (phi / 180) * 150; // Map to 15-165 degrees for pole coverage with stability
-
-      // Add slight randomization to prevent perfect patterns
-      const randomOffset = (Math.random() - 0.5) * 20;
-      theta = (theta + randomOffset) % 360;
-      phi = Math.max(0, Math.min(180, phi + (Math.random() - 0.5) * 10));
+      // y ranges smoothly from 1 to -1 for complete spherical coverage
+      const y = imageCount > 1 ? 1 - (i / (imageCount - 1)) * 2 : 0;
+      const phi = Math.acos(Math.max(-1, Math.min(1, y))) * (180 / Math.PI);
+      const theta = ((goldenAngle * i) * (180 / Math.PI)) % 360;
 
       positions.push({
         theta: theta,
@@ -219,33 +199,15 @@ export const SphereImageGrid: React.FC<SphereImageGridProps> = ({
 
       const worldPos: Position3D = { x, y, z };
 
-      // Calculate visibility with smooth fade zones
-      const fadeZoneStart = -10;  // Start fading out
-      const fadeZoneEnd = -30;    // Completely hidden
-      const isVisible = worldPos.z > fadeZoneEnd;
+      // Ensure all employees are visible in orbital 3D depth
+      const zRatio = worldPos.z / Math.max(1, actualSphereRadius); // -1 (back) to +1 (front)
+      // Front nodes: full opacity (1.0). Back nodes: soft atmospheric opacity (0.42 to 0.95).
+      const fadeOpacity = zRatio >= 0 ? 1 : Math.max(0.42, 1 + zRatio * 0.58);
+      const isVisible = true; // Keep all employees visible
 
-      // Calculate fade opacity based on Z position
-      let fadeOpacity = 1;
-      if (worldPos.z <= fadeZoneStart) {
-        // Linear fade from 1 to 0 as Z goes from fadeZoneStart to fadeZoneEnd
-        fadeOpacity = Math.max(0, (worldPos.z - fadeZoneEnd) / (fadeZoneStart - fadeZoneEnd));
-      }
-
-      // Check if this image originated from a pole position
-      const isPoleImage = pos.phi < 30 || pos.phi > 150; // Images from extreme angles
-
-      // Calculate distance from center for scaling (in 2D screen space)
-      const distanceFromCenter = Math.sqrt(worldPos.x * worldPos.x + worldPos.y * worldPos.y);
-      const maxDistance = actualSphereRadius;
-      const distanceRatio = Math.min(distanceFromCenter / maxDistance, 1);
-
-      // Scale based on distance from center - be more forgiving for pole images
-      const distancePenalty = isPoleImage ? 0.4 : 0.7; // Less penalty for pole images
-      const centerScale = Math.max(0.3, 1 - distanceRatio * distancePenalty);
-
-      // Also consider Z-depth for additional scaling
-      const depthScale = (worldPos.z + actualSphereRadius) / (2 * actualSphereRadius);
-      const scale = centerScale * Math.max(0.5, 0.8 + depthScale * 0.3);
+      // Smooth depth scaling: front items are prominent (~1.18x), back items smaller (~0.76x)
+      const depthFactor = (zRatio + 1) / 2; // 0 (back) to 1 (front)
+      const scale = 0.76 + depthFactor * 0.42;
 
       return {
         ...worldPos,
@@ -257,44 +219,34 @@ export const SphereImageGrid: React.FC<SphereImageGridProps> = ({
       };
     });
 
-    // Apply collision detection to prevent overlaps
+    // Apply gentle collision spacing so nodes don't overlap while maintaining healthy size
     const adjustedPositions = [...positions];
 
     for (let i = 0; i < adjustedPositions.length; i++) {
       const pos = adjustedPositions[i];
-      if (!pos.isVisible) continue;
-
       let adjustedScale = pos.scale;
       const imageSize = baseImageSize * adjustedScale;
 
-      // Check for overlaps with other visible images
       for (let j = 0; j < adjustedPositions.length; j++) {
         if (i === j) continue;
-
         const other = adjustedPositions[j];
-        if (!other.isVisible) continue;
 
         const otherSize = baseImageSize * other.scale;
-
-        // Calculate 2D distance between images on screen
         const dx = pos.x - other.x;
         const dy = pos.y - other.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
-
-        // Minimum distance to prevent overlap (with more generous padding)
-        const minDistance = (imageSize + otherSize) / 2 + 25;
+        const minDistance = (imageSize + otherSize) / 2 + 4;
 
         if (distance < minDistance && distance > 0) {
-          // More aggressive scale reduction to prevent overlap
           const overlap = minDistance - distance;
-          const reductionFactor = Math.max(0.4, 1 - (overlap / minDistance) * 0.6);
+          const reductionFactor = Math.max(0.85, 1 - (overlap / minDistance) * 0.15);
           adjustedScale = Math.min(adjustedScale, adjustedScale * reductionFactor);
         }
       }
 
       adjustedPositions[i] = {
         ...pos,
-        scale: Math.max(0.25, adjustedScale) // Ensure minimum scale
+        scale: Math.max(0.72, adjustedScale)
       };
     }
 
@@ -487,12 +439,12 @@ export const SphereImageGrid: React.FC<SphereImageGridProps> = ({
 
     const imageSize = baseImageSize * position.scale;
     const isHovered = hoveredIndex === index;
-    const finalScale = isHovered ? Math.min(1.2, 1.2 / position.scale) : 1;
+    const finalScale = isHovered ? 1.25 : 1;
 
     return (
       <div
         key={image.id}
-        className="absolute cursor-pointer select-none transition-transform duration-200 ease-out"
+        className="absolute cursor-pointer select-none transition-transform duration-150 ease-out"
         style={{
           width: `${imageSize}px`,
           height: `${imageSize}px`,
@@ -500,21 +452,28 @@ export const SphereImageGrid: React.FC<SphereImageGridProps> = ({
           top: `${containerSize/2 + position.y}px`,
           opacity: position.fadeOpacity,
           transform: `translate(-50%, -50%) scale(${finalScale})`,
-          zIndex: position.zIndex
+          zIndex: isHovered ? 9999 : position.zIndex
         }}
         onMouseEnter={() => setHoveredIndex(index)}
         onMouseLeave={() => setHoveredIndex(null)}
         onClick={() => setSelectedImage(image)}
       >
-        <div className="relative w-full h-full rounded-full overflow-hidden shadow-2xl border border-white/30 bg-neutral-900 ring-1 ring-white/10 hover:ring-white/40 transition-all">
+        <div className="relative w-full h-full rounded-full overflow-hidden shadow-2xl border-2 border-white/35 bg-neutral-900 ring-1 ring-white/20 hover:border-white hover:ring-2 hover:ring-[#7F1D2D] transition-all">
           <img
             src={image.src}
             alt={image.alt}
-            className="w-full h-full object-cover object-top"
+            className="w-full h-full object-cover object-top filter grayscale contrast-110 hover:grayscale-0 transition-all duration-300"
             draggable={false}
-            loading={index < 4 ? 'eager' : 'lazy'}
+            loading="eager"
           />
         </div>
+
+        {/* Hover Identifier Pill */}
+        {isHovered && image.title && (
+          <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-1 bg-black/95 border border-neutral-700 text-[10px] tracking-wider uppercase font-mono text-white whitespace-nowrap pointer-events-none rounded shadow-2xl z-50">
+            {image.title}
+          </div>
+        )}
       </div>
     );
   }, [worldPositions, baseImageSize, containerSize, hoveredIndex]);

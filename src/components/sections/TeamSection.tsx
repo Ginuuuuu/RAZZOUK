@@ -13,11 +13,11 @@ export function TeamSection() {
     <section
       id="studio"
       aria-label="Studio Artist Roster"
-      className="relative w-full bg-black text-white py-28 sm:py-36 md:py-44 border-t border-neutral-900"
+      className="relative w-full bg-black text-white py-16 sm:py-20 md:py-24 border-t border-neutral-900"
     >
       <div className="max-w-7xl mx-auto px-6 sm:px-10 md:px-14">
         {/* Section Header */}
-        <div className="max-w-3xl mb-16 sm:mb-24">
+        <div className="max-w-3xl mb-10 sm:mb-14">
           <div className="flex items-center gap-3 text-neutral-400 text-[10px] sm:text-xs tracking-[0.3em] uppercase mb-4">
             <span className="font-accent text-neutral-400 text-lg">chapter 07</span>
             <span>·</span>
