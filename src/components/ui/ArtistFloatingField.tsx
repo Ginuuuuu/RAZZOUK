@@ -53,59 +53,71 @@ export function ArtistFloatingField({ images, className = "" }: ArtistFloatingFi
   const isCanvasPanning = useRef<boolean>(false);
   const canvasPanStart = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
-  // Initialize nodes distributed across the entire full-bleed canvas
+  // Initialize nodes distributed evenly across the canvas with generous breathing gaps
   const initNodes = useCallback(() => {
-    if (!containerRef.current || images.length === 0) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const width = rect.width || (typeof window !== "undefined" ? window.innerWidth : 1440);
-    const height = rect.height || 880;
+    const el = containerRef.current;
+    if (!el || images.length === 0) return;
 
-    // Node size: smaller, sleek, compact (~68px to 84px on desktop, ~52px to 64px on mobile)
+    const rect = el.getBoundingClientRect();
+    const width = el.offsetWidth || rect.width || (typeof window !== "undefined" ? window.innerWidth : 1440);
+    const height = el.offsetHeight || rect.height || 540;
+
     const isMobile = width < 640;
     const isTablet = width >= 640 && width < 1024;
-    const baseSize = isMobile ? 54 : isTablet ? 66 : 76;
+    const size = isMobile ? 52 : isTablet ? 60 : 66;
 
     const count = images.length;
-    // Calculate grid columns and rows to distribute evenly edge-to-edge
-    const aspect = width / height;
-    const cols = Math.max(isMobile ? 4 : 7, Math.ceil(Math.sqrt(count * aspect * 1.12)));
-    const rows = Math.ceil(count / cols);
 
-    const padX = isMobile ? 16 : 48;
-    const padY = 32;
+    // Fixed, balanced row count: fills the entire vertical space from top to bottom
+    let rows = 3;
+    if (isMobile) {
+      rows = 6;
+    } else if (isTablet) {
+      rows = 4;
+    } else {
+      rows = 3;
+    }
 
-    const usableWidth = Math.max(300, width - padX * 2 - baseSize);
-    const usableHeight = Math.max(300, height - padY * 2 - baseSize);
+    const cols = Math.ceil(count / rows);
 
-    const cellW = usableWidth / Math.max(1, cols - 1);
-    const cellH = usableHeight / Math.max(1, rows - 1);
+    const padX = isMobile ? 16 : 40;
+    const padY = isMobile ? 18 : 28;
+
+    const usableWidth = Math.max(300, width - padX * 2 - size);
+    const usableHeight = Math.max(200, height - padY * 2 - size);
+
+    const stepX = usableWidth / Math.max(1, cols - 1);
+    const stepY = usableHeight / Math.max(1, rows - 1);
 
     const newNodes: NodeState[] = images.map((image, idx) => {
-      const col = idx % cols;
       const row = Math.floor(idx / cols);
+      const col = idx % cols;
 
-      // Jitter within cell to create an organic, relaxed distribution
-      const jitterX = (Math.random() - 0.5) * (cellW * 0.45);
-      const jitterY = (Math.random() - 0.5) * (cellH * 0.45);
+      // Stagger odd rows slightly (honeycomb layout) so avatars never align rigidly or touch
+      const stagger = (row % 2 === 1) ? stepX * 0.35 : 0;
 
-      // Node size with slight variation for visual depth
-      const sizeVariation = ((idx % 5) - 2) * (isMobile ? 3 : 5);
-      const size = Math.round(baseSize + sizeVariation);
+      // Controlled organic jitter
+      const jitterX = (Math.random() - 0.5) * (stepX * 0.18);
+      const jitterY = (Math.random() - 0.5) * (stepY * 0.18);
 
-      const x = Math.max(padX, Math.min(width - size - padX, padX + col * cellW + jitterX));
-      const y = Math.max(padY, Math.min(height - size - padY, padY + row * cellH + jitterY));
+      let x = padX + col * stepX + stagger + jitterX;
+      let y = padY + row * stepY + jitterY;
+
+      // Ensure nodes stay safely within container margins
+      x = Math.max(padX, Math.min(width - size - padX, x));
+      y = Math.max(padY, Math.min(height - size - padY, y));
 
       return {
         id: image.id,
         image,
         x,
         y,
-        vx: (Math.random() - 0.5) * 0.7,
-        vy: (Math.random() - 0.5) * 0.7,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
         size,
         phaseX: Math.random() * Math.PI * 2,
         phaseY: Math.random() * Math.PI * 2,
-        speed: 0.001 + Math.random() * 0.0015,
+        speed: 0.0008 + Math.random() * 0.0012,
         isDragging: false,
       };
     });
@@ -181,7 +193,8 @@ export function ArtistFloatingField({ images, className = "" }: ArtistFloatingFi
           node.vy = -Math.abs(node.vy) * 0.75 - 0.2;
         }
 
-        // 4. Soft inter-node collision separation (keeps them from completely overlapping)
+        // 4. Soft inter-node collision separation (guarantees generous breathing space between avatars)
+        const minGap = width < 640 ? 14 : 26;
         for (let j = i + 1; j < nodes.length; j++) {
           const other = nodes[j];
           if (other.isDragging) continue;
@@ -189,12 +202,12 @@ export function ArtistFloatingField({ images, className = "" }: ArtistFloatingFi
           const dx = (other.x + other.size / 2) - (node.x + node.size / 2);
           const dy = (other.y + other.size / 2) - (node.y + node.size / 2);
           const dist = Math.hypot(dx, dy);
-          const minDist = (node.size + other.size) / 2 + 6;
+          const minDist = (node.size + other.size) / 2 + minGap;
 
           if (dist < minDist && dist > 0.001) {
             const overlap = (minDist - dist) / dist;
-            const pushX = dx * overlap * 0.12;
-            const pushY = dy * overlap * 0.12;
+            const pushX = dx * overlap * 0.18;
+            const pushY = dy * overlap * 0.18;
 
             node.x -= pushX * 0.5;
             node.y -= pushY * 0.5;
@@ -225,9 +238,19 @@ export function ArtistFloatingField({ images, className = "" }: ArtistFloatingFi
     };
     window.addEventListener("resize", handleResize);
 
+    // Also observe container size with ResizeObserver to prevent layout race conditions
+    let ro: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== "undefined" && containerRef.current) {
+      ro = new ResizeObserver(() => {
+        initNodes();
+      });
+      ro.observe(containerRef.current);
+    }
+
     return () => {
       if (animFrameId.current) cancelAnimationFrame(animFrameId.current);
       window.removeEventListener("resize", handleResize);
+      if (ro) ro.disconnect();
     };
   }, [initNodes]);
 
@@ -339,13 +362,13 @@ export function ArtistFloatingField({ images, className = "" }: ArtistFloatingFi
 
   return (
     <>
-      {/* Full-width Edge-to-Edge Interactive Canvas without rectangular outline */}
+      {/* Full-width Edge-to-Edge Interactive Canvas with balanced height and zero excess negative space */}
       <div
         ref={containerRef}
         onPointerMove={handlePointerMove}
         onPointerDown={handleCanvasPointerDown}
         onPointerUp={handleCanvasPointerUp}
-        className={`relative w-full h-[720px] sm:h-[800px] md:h-[880px] lg:h-[940px] overflow-hidden bg-black select-none cursor-grab active:cursor-grabbing ${className}`}
+        className={`relative w-full h-[460px] sm:h-[500px] md:h-[540px] lg:h-[560px] overflow-hidden bg-black select-none cursor-grab active:cursor-grabbing ${className}`}
         style={{ touchAction: "none" }}
       >
         {/* Subtle Ambient Studio Background Grid */}
@@ -375,10 +398,8 @@ export function ArtistFloatingField({ images, className = "" }: ArtistFloatingFi
               onPointerUp={() => handlePointerUp(img.id, img)}
               onMouseEnter={() => setHoveredId(img.id)}
               onMouseLeave={() => setHoveredId(null)}
-              className="absolute top-0 left-0 cursor-grab active:cursor-grabbing group/avatar transition-shadow duration-300"
+              className="absolute top-0 left-0 cursor-grab active:cursor-grabbing group/avatar transition-shadow duration-300 w-[52px] h-[52px] sm:w-[60px] sm:h-[60px] lg:w-[66px] lg:h-[66px]"
               style={{
-                width: 76,
-                height: 76,
                 willChange: "transform",
               }}
             >
