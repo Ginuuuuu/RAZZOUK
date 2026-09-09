@@ -14,9 +14,8 @@ export function Hero03Colour() {
     offset: ["start start", "end end"],
   });
 
-  // Zooms continuously OUT from macro needle detail to full composition
-  // 0% -> 2.6x, 25% -> 2.0x, 50% -> 1.5x, 75% -> 1.2x, 100% -> 1.0x
-  const scale = useTransform(scrollYProgress, [0, 0.3, 0.6, 0.85, 1], [2.6, 2.0, 1.5, 1.18, 1.0]);
+  // Zooms continuously OUT: starts at 2.5x, reaches full composition at 1.0x
+  const scale = useTransform(scrollYProgress, [0, 1], [2.5, 1.0]);
 
   // Subtle opacity modulation for cinematic depth
   const textOpacity = useTransform(scrollYProgress, [0, 0.15, 0.85, 1], [0.6, 1, 1, 0.85]);
@@ -26,7 +25,7 @@ export function Hero03Colour() {
     <section
       ref={containerRef}
       aria-label="Colour Tattoos Exhibition"
-      className="relative w-full h-[260vh] bg-black text-white"
+      className="relative w-full h-[250vh] bg-black text-white"
     >
       {/* Sticky Viewport Stage */}
       <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between p-6 sm:p-10 md:p-14 lg:p-20">
