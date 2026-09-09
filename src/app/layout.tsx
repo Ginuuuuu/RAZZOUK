@@ -32,6 +32,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://razzouk-studio.com"),
   title: "Razzouk — Tattoo & Piercing Studio",
   description:
     "A private tattoo and piercing atelier where ideas become permanent. Considered craft, anatomical placement, and intimate collaboration.",
