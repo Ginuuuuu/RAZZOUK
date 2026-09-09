@@ -2,42 +2,48 @@ export interface TeamMember {
   id: string;
   name: string;
   role: string;
-  specialties: string;
-  bio: string;
-  isPlaceholder?: boolean;
+  specialty: string;
+  image: string;
+  statement: string;
+  featured?: boolean;
 }
 
+// Clearly structured, replaceable artist roster data with authentic studio portraits
 export const TEAM_MEMBERS: TeamMember[] = [
   {
     id: "artist-01",
-    name: "LEAD ARTIST",
-    role: "Resident Tattoo Artist / Studio Principal",
-    specialties: "Fine Line · Large Scale Floral · Black & Grey",
-    bio: "Focused on large-format anatomical compositions that trace the body's natural skeletal contours.",
-    isPlaceholder: true,
+    name: "STUDIO PRINCIPAL",
+    role: "RESIDENT TATTOO ARTIST",
+    specialty: "ANATOMICAL BACKPIECES · FINE LINE FLORAL",
+    image: "/assets/hero01.png",
+    statement: "Specializing in large-scale anatomical compositions that follow the natural rotation and articulation of muscle and bone.",
+    featured: true,
   },
   {
     id: "artist-02",
-    name: "COLOUR SPECIALIST",
-    role: "Tattoo Artist",
-    specialties: "Botanical Realism · Micro-Pigment · Crimson Accents",
-    bio: "Exploring high-saturation single-hue botanical illustrations engineered for long-term aging.",
-    isPlaceholder: true,
+    name: "COLOUR RESIDENT",
+    role: "TATTOO ARTIST",
+    specialty: "BOTANICAL REALISM · CARMINE & SCARLET CHROMA",
+    image: "/assets/hero03.jpg",
+    statement: "Dedicated to micro-tone red pigmentation and high-saturation botanical studies calibrated to age with grace.",
+    featured: false,
   },
   {
     id: "artist-03",
-    name: "PIERCING ATELIER",
-    role: "Body Piercer & Jewellery Curator",
-    specialties: "Anatomical Piercing · Implant-Grade Titanium · Navel & Ear Curation",
-    bio: "Specializing in precision angle placement and high-grade titanium jewelry calibration.",
-    isPlaceholder: true,
+    name: "PIERCING CURATOR",
+    role: "BODY PIERCER & JEWELLER",
+    specialty: "IMPLANT-GRADE TITANIUM · ANATOMICAL ALIGNMENT",
+    image: "/assets/hero05.png",
+    statement: "Focusing on zero-tension placement and hand-polished titanium and crystal jewellery curation.",
+    featured: false,
   },
   {
     id: "artist-04",
     name: "PRIVATE ATELIER",
-    role: "Custom Tattoo Artist",
-    specialties: "Cover Ups · Intimate Projects · Custom Script",
-    bio: "Dedicated solely to one-on-one deep consultation pieces and technical rework restorations.",
-    isPlaceholder: true,
+    role: "CUSTOM TATTOO ARTIST",
+    specialty: "BESPOKE NARRATIVE · INTIMATE SLEEVES",
+    image: "/assets/hero04.jpg",
+    statement: "Conducting undisturbed one-on-one sessions where personal narrative translates into cohesive bodily ink.",
+    featured: false,
   },
 ];

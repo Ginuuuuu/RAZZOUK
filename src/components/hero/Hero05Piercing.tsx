@@ -14,9 +14,9 @@ export function Hero05Piercing() {
     offset: ["start start", "end end"],
   });
 
-  // Zooms continuously OUT: starts at 2.5x, reaches full composition at 1.0x
-  // Jewelry remains the unwavering anchor
-  const scale = useTransform(scrollYProgress, [0, 1], [2.5, 1.0]);
+  // Zooms continuously OUT: starts focused on crystal solitaire (2.2x), reaches full composition at 1.0x
+  // The piercing remains the steady visual anchor throughout
+  const scale = useTransform(scrollYProgress, [0, 1], [2.2, 1.0]);
 
   // Typography reveal
   const textOpacity = useTransform(scrollYProgress, [0, 0.2, 0.85, 1], [0.5, 1, 1, 0.85]);
@@ -31,11 +31,11 @@ export function Hero05Piercing() {
       {/* Sticky Viewport Stage */}
       <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between p-6 sm:p-10 md:p-14 lg:p-20">
         {/* Background Zooming Image (hero05.png) */}
-        <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
           <motion.div
             style={{
               scale,
-              transformOrigin: "62% 24%", // Anchor locked right on the crystal solitaire navel jewellery
+              transformOrigin: "62% 24%", // Anchor locked directly on crystal solitaire navel jewellery
             }}
             className="w-full h-full relative"
           >
@@ -43,15 +43,17 @@ export function Hero05Piercing() {
               src="/assets/hero05.png"
               alt="Belly Piercing and Fine Jewelry Precision"
               fill
+              priority
               sizes="100vw"
-              className="object-cover"
+              className="object-cover object-[62%_24%]"
               quality={95}
             />
           </motion.div>
 
-          {/* Precision monochrome gradient masks */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-transparent to-black/60 pointer-events-none" />
+          {/* Subtle gradient overlays: darkens left side for text legibility while right side (piercing & torso) remains clear & sparkling */}
+          <div className="absolute inset-0 bg-black/25 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/40 to-transparent w-full md:w-3/5 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/40 pointer-events-none" />
         </div>
 
         {/* Top Header Information — Architectural Precision */}
@@ -62,7 +64,7 @@ export function Hero05Piercing() {
             </span>
             <span className="text-neutral-400">·</span>
             <span className="font-body text-[10px] sm:text-xs text-neutral-300 tracking-[0.25em] uppercase">
-              PRECISION PIERCING
+              PIERCING / COMPLETED WORK
             </span>
           </div>
 
@@ -71,15 +73,15 @@ export function Hero05Piercing() {
           </span>
         </div>
 
-        {/* Editorial Content Block — Center Left */}
+        {/* Editorial Content Block — Anchored Left to never collide with piercing on Right */}
         <motion.div
           style={{ opacity: textOpacity, y: textY }}
-          className="relative z-10 max-w-2xl my-auto py-8 pointer-events-auto"
+          className="relative z-10 max-w-xl my-auto py-8 pointer-events-auto"
         >
           <div className="space-y-4 sm:space-y-6">
             <div className="inline-block">
               <span className="text-[11px] tracking-[0.3em] uppercase text-[#E5E5E5] font-body border-b border-neutral-700 pb-1">
-                JEWELLERY & ANATOMY
+                PIERCING / COMPLETED WORK
               </span>
             </div>
 
@@ -88,7 +90,7 @@ export function Hero05Piercing() {
               <span className="font-medium text-[#E5E5E5]">PIERCING</span>
             </h2>
 
-            <p className="font-body text-sm sm:text-base md:text-lg text-neutral-300 tracking-[0.15em] font-light max-w-lg leading-relaxed">
+            <p className="font-body text-sm sm:text-base md:text-lg text-neutral-300 tracking-[0.15em] font-light max-w-md leading-relaxed">
               A precise detail, placed with intention. Clean, considered piercing in a private studio setting.
             </p>
 
@@ -98,7 +100,7 @@ export function Hero05Piercing() {
                 href="/works/belly-piercing"
                 className="group inline-flex items-center gap-4 text-xs sm:text-sm tracking-[0.25em] uppercase font-medium text-white hover:text-neutral-300 transition-colors py-2 border-b border-white hover:border-neutral-400"
               >
-                <span>VIEW PIERCING ARCHIVE</span>
+                <span>SEE THE WORKS</span>
                 <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-2" />
               </Link>
             </div>
@@ -113,11 +115,11 @@ export function Hero05Piercing() {
           </div>
           <div>
             <span className="block text-neutral-400">GEMSTONE</span>
-            <span className="text-white">Bezel-Set Synthetic Cubic Zirconia</span>
+            <span className="text-white">Bezel-Set Crystal Solitaire</span>
           </div>
           <div className="text-left sm:text-right">
             <span className="block text-neutral-400">CALIBRATION</span>
-            <span className="text-white">Custom Measured Post Length</span>
+            <span className="text-white">Custom Anatomical Alignment</span>
           </div>
         </div>
       </div>

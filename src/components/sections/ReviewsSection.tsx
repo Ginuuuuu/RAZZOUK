@@ -34,7 +34,7 @@ export function ReviewsSection() {
                 key={rev.id}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
+                viewport={{ once: true, margin: "-80px" }}
                 transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                 className={`grid grid-cols-1 lg:grid-cols-12 gap-8 items-start ${
                   isEven ? "" : "lg:justify-items-end"
@@ -46,7 +46,7 @@ export function ReviewsSection() {
                     isEven ? "lg:col-start-1" : "lg:col-start-5 text-left"
                   }`}
                 >
-                  <p className="font-heading text-xl sm:text-2xl md:text-3xl lg:text-4xl font-light tracking-[0.06em] text-neutral-100 leading-snug sm:leading-relaxed">
+                  <p className="font-heading text-xl sm:text-2xl md:text-3xl lg:text-4xl font-light tracking-[0.05em] text-neutral-100 leading-snug sm:leading-relaxed">
                     &ldquo;{rev.quote}&rdquo;
                   </p>
 
