@@ -30,12 +30,6 @@ export function ArtistSection() {
               The hands, eyes, and minds behind the studio. An interactive collective showcasing all {ARTIST_SPHERE_ITEMS.length} resident tattooists, body piercers, and craftsmen who work here at Razzouk.
             </p>
           </div>
-
-          {/* Interactive Cue Badge */}
-          <div className="flex items-center gap-3 border border-neutral-800 bg-neutral-950/80 px-4 py-2.5 text-[10px] tracking-[0.25em] font-mono uppercase text-neutral-400 self-start lg:self-auto">
-            <span className="w-2 h-2 rounded-full bg-[#7F1D2D] animate-pulse" />
-            <span>DRAG ANY ARTIST FREELY · PAN CANVAS · CLICK TO VIEW PROFILE</span>
-          </div>
         </div>
       </div>
 
