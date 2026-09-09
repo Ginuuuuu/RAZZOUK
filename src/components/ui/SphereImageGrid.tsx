@@ -510,7 +510,7 @@ export const SphereImageGrid: React.FC<SphereImageGridProps> = ({
           <img
             src={image.src}
             alt={image.alt}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-top"
             draggable={false}
             loading={index < 4 ? 'eager' : 'lazy'}
           />
@@ -541,7 +541,7 @@ export const SphereImageGrid: React.FC<SphereImageGridProps> = ({
             <img
               src={selectedImage.src}
               alt={selectedImage.alt}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover object-top"
             />
             <button
               onClick={() => setSelectedImage(null)}
