@@ -11,7 +11,7 @@ interface StepConfig {
   isWine?: boolean;
   start: number;
   end: number;
-  topPct: string; // Vertical anchor percentage
+  topPct: string; // Distinct vertical row position
 }
 
 const STEPS: StepConfig[] = [
@@ -21,7 +21,7 @@ const STEPS: StepConfig[] = [
     stepNum: "01",
     start: 0.00,
     end: 0.20,
-    topPct: "10%",
+    topPct: "12%",
   },
   {
     word: "WE DESIGN",
@@ -29,7 +29,7 @@ const STEPS: StepConfig[] = [
     stepNum: "02",
     start: 0.20,
     end: 0.40,
-    topPct: "27%",
+    topPct: "28%",
   },
   {
     word: "WE SKETCH",
@@ -45,7 +45,7 @@ const STEPS: StepConfig[] = [
     stepNum: "04",
     start: 0.60,
     end: 0.80,
-    topPct: "61%",
+    topPct: "60%",
   },
   {
     word: "SCRATCH",
@@ -53,8 +53,8 @@ const STEPS: StepConfig[] = [
     stepNum: "05",
     isWine: true,
     start: 0.80,
-    end: 1.00,
-    topPct: "78%",
+    end: 0.94,
+    topPct: "76%",
   },
 ];
 
@@ -67,12 +67,12 @@ function StackedWordRow({
 }) {
   const { word, stepNum, isWine, start, end, topPct } = step;
 
-  // Zoom-out: starts HUGE (5.0), shrinks down to 1.0 as scroll progresses through its range
-  // Once finished (progress >= end), scale clamps permanently to 1.0
+  // Zoom-out: starts HUGE (5.0), continuously zooms down to 1.0 as scroll progresses through its range
+  // Once completed (progress >= end), scale remains 1.0 permanently
   const scale = useTransform(progress, [start, end], [5.0, 1.0]);
 
-  // Opacity: 0 before start. Enters quickly at start, then REMAINS 1.0 permanently!
-  // It NEVER disappears after completion — all completed words form the final stack!
+  // Opacity: 0 before entry. Enters quickly at start of range, then REMAINS 1.0 PERMANENTLY!
+  // It NEVER disappears after completion — all completed words form the final 5-word stack!
   const opacity = useTransform(
     progress,
     [start, Math.min(start + 0.04, end)],
@@ -91,23 +91,23 @@ function StackedWordRow({
     >
       <div className="flex items-baseline justify-center gap-3 sm:gap-6 w-full max-w-6xl mx-auto">
         {/* Subtle stage numeral tag */}
-        <span className="font-mono text-[9px] sm:text-xs text-neutral-400 tracking-[0.25em] opacity-70 hidden md:inline-block">
+        <span className="font-mono text-[9px] sm:text-xs text-neutral-400 tracking-[0.25em] opacity-60 hidden md:inline-block">
           {stepNum}
         </span>
 
         {/* The Word */}
         <h2
-          className={`font-heading font-black tracking-[-0.03em] uppercase leading-none whitespace-nowrap text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-8xl transition-colors duration-300 ${
+          className={`font-heading font-black tracking-[-0.03em] uppercase leading-none whitespace-nowrap text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl transition-colors duration-300 ${
             isWine
-              ? "text-[#7F1D2D] drop-shadow-[0_0_45px_rgba(127,29,45,0.55)]"
-              : "text-white/95 drop-shadow-[0_2px_20px_rgba(0,0,0,0.8)]"
+              ? "text-[#7F1D2D] drop-shadow-[0_0_40px_rgba(127,29,45,0.6)]"
+              : "text-white drop-shadow-[0_2px_15px_rgba(0,0,0,0.85)]"
           }`}
         >
           {word}
         </h2>
 
-        {/* Mirror indicator on right for balance */}
-        <span className="font-mono text-[9px] sm:text-xs text-neutral-400 tracking-[0.25em] opacity-70 hidden md:inline-block">
+        {/* Balance tag */}
+        <span className="font-mono text-[9px] sm:text-xs text-neutral-400 tracking-[0.25em] opacity-60 hidden md:inline-block">
           {isWine ? "END" : "05"}
         </span>
       </div>
@@ -123,7 +123,7 @@ export function Hero02Process() {
     offset: ["start start", "end end"],
   });
 
-  // Background image subtly moves and stays visible
+  // Background image stays visible and subtly scales
   const bgScale = useTransform(scrollYProgress, [0, 1], [1.05, 1.0]);
 
   // Overall section progress bar indicator
@@ -136,9 +136,9 @@ export function Hero02Process() {
       aria-label="The Creation Process"
       className="relative w-full h-[500vh] bg-black text-white"
     >
-      {/* Sticky Viewport Stage */}
+      {/* Sticky Viewport Stage (100vh) */}
       <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
-        {/* Layer 0: Background Image (hero02.jpg) — Clearly visible throughout */}
+        {/* Layer 0: Background Image (hero02.jpg) — Clearly visible behind typography */}
         <motion.div
           style={{ scale: bgScale }}
           className="absolute inset-0 w-full h-full pointer-events-none z-0"
@@ -152,9 +152,9 @@ export function Hero02Process() {
             quality={90}
           />
 
-          {/* Layer 1: Subtle cinematic dark overlay (45%) — keeps image clearly visible */}
-          <div className="absolute inset-0 bg-black/45 pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/60 pointer-events-none" />
+          {/* Layer 1: Semi-transparent cinematic dark overlay (40%) — preserves tattoo visibility */}
+          <div className="absolute inset-0 bg-black/40 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/50 pointer-events-none" />
         </motion.div>
 
         {/* Layer 3: Studio Section Watermark (Top Left) */}
@@ -177,7 +177,7 @@ export function Hero02Process() {
           </span>
         </div>
 
-        {/* Layer 2: The Continuous Typographic Stack */}
+        {/* Layer 2: The Continuous Typographic Stack (All 5 Words) */}
         <div className="relative z-20 w-full h-full max-w-7xl mx-auto pointer-events-none">
           {STEPS.map((step) => (
             <StackedWordRow
