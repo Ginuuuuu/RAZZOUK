@@ -44,6 +44,7 @@ try {
   // Wait for page load
   await send("Page.enable");
   await send("Runtime.enable");
+  await send("Page.navigate", { url: "http://localhost:3000" });
   await new Promise((resolve) => setTimeout(resolve, 3000));
 
   // Diagnostic 1: Check document heights, overflow, and section positions
