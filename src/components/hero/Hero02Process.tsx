@@ -67,17 +67,28 @@ function StackedWordRow({
 }) {
   const { word, stepNum, isWine, start, end, topPct } = step;
 
-  // Zoom-out: starts HUGE (5.0), continuously zooms down to 1.0 as scroll progresses through its range
-  // Once completed (progress >= end), scale remains 1.0 permanently
-  const scale = useTransform(progress, [start, end], [5.0, 1.0]);
+  // Zoom-out: starts HUGE (5.0) at entry, zooms down to 1.0 at end, and stays 1.0 permanently
+  const scale = useTransform(progress, (p: number) => {
+    if (p <= start) return 5.0;
+    if (p >= end) return 1.0;
+    const ratio = (p - start) / (end - start);
+    return 5.0 - ratio * 4.0;
+  });
 
-  // Opacity: 0 before entry. Enters quickly at start of range, then REMAINS 1.0 PERMANENTLY!
-  // It NEVER disappears after completion — all completed words form the final 5-word stack!
-  const opacity = useTransform(
-    progress,
-    [start, Math.min(start + 0.04, end)],
-    [0.0, 1.0]
-  );
+  // Opacity: 0 before start (strictly invisible). Smoothly enters, then remains 1.0 permanently!
+  const opacity = useTransform(progress, (p: number) => {
+    if (p < start) return 0;
+    const fadeInWindow = Math.min(0.04, (end - start) * 0.3);
+    if (p < start + fadeInWindow) {
+      return (p - start) / fadeInWindow;
+    }
+    return 1.0;
+  });
+
+  // Visibility: 'hidden' before start guarantees zero premature render or visual glitching
+  const visibility = useTransform(progress, (p: number) => {
+    return p < start ? "hidden" : "visible";
+  });
 
   return (
     <motion.div
@@ -85,6 +96,7 @@ function StackedWordRow({
         top: topPct,
         scale,
         opacity,
+        visibility,
         transformOrigin: "center center",
       }}
       className="absolute left-0 right-0 w-full flex items-center justify-center pointer-events-none select-none px-4"
