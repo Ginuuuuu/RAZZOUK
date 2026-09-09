@@ -8,6 +8,7 @@ import { InquiryModal } from "./InquiryModal";
 
 export function SiteNavigation() {
   const pathname = usePathname();
+  const isHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [inquiryOpen, setInquiryOpen] = useState(false);
@@ -15,11 +16,20 @@ export function SiteNavigation() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 40);
+      if (pathname === "/") {
+        // Hero01 is ~220vh tall. Completely remove the navigation bar while on Hero01.
+        // Only reveal once the user has scrolled completely past Hero01 into the subsequent sections.
+        const heroThreshold = window.innerHeight * 1.9;
+        setScrolled(window.scrollY > heroThreshold);
+      } else {
+        setScrolled(window.scrollY > 40);
+      }
     };
+
+    handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [pathname]);
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -27,14 +37,21 @@ export function SiteNavigation() {
     setWorksDropdown(false);
   }, [pathname]);
 
+  const isVisible = !isHome || scrolled;
+
   return (
     <>
       <header
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
-          scrolled
-            ? "bg-black/85 backdrop-blur-md py-4 border-b border-neutral-900/80"
-            : "bg-transparent py-6 sm:py-8"
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-out ${
+          isHome
+            ? isVisible
+              ? "translate-y-0 opacity-100 pointer-events-auto bg-black/85 backdrop-blur-md py-4 border-b border-neutral-900/80"
+              : "-translate-y-full opacity-0 pointer-events-none py-4"
+            : scrolled
+              ? "bg-black/85 backdrop-blur-md py-4 border-b border-neutral-900/80"
+              : "bg-transparent py-6 sm:py-8"
         }`}
+        aria-hidden={!isVisible}
       >
         <div className="max-w-7xl mx-auto px-6 sm:px-10 md:px-14 flex items-center justify-between">
           {/* Brand Logo */}

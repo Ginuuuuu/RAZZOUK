@@ -10,10 +10,10 @@ export function ArtistSection() {
     <section
       id="artist"
       aria-label="Resident Artists & Craftsmen"
-      className="relative w-full bg-black text-white py-14 sm:py-20 md:py-24 border-t border-neutral-900 overflow-hidden"
+      className="relative w-full bg-black text-white py-10 sm:py-14 md:py-16 border-t border-neutral-900 overflow-hidden"
     >
       {/* Section Header with grid container */}
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 md:px-14 mb-8 sm:mb-12">
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 md:px-14 mb-6 sm:mb-8">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
           <div className="max-w-2xl">
             <div className="flex items-center gap-3 text-neutral-400 text-[10px] sm:text-xs tracking-[0.3em] uppercase mb-3">
@@ -51,7 +51,7 @@ export function ArtistSection() {
       </motion.div>
 
       {/* Consultation Callout with grid container */}
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 md:px-14 mt-10 sm:mt-14">
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 md:px-14 mt-8 sm:mt-10">
         <div className="pt-6 border-t border-neutral-900/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-[11px] text-neutral-400 tracking-[0.2em] uppercase font-body font-light">
           <p>Clients may request consultations with specific resident artists or be matched by project scope.</p>
           <a
