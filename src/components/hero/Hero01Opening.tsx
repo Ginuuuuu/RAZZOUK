@@ -5,7 +5,7 @@ import Image from "next/image";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { ROTATING_SERVICES, STUDIO_STATEMENT } from "@/data/services";
 import { InquiryModal } from "@/components/navigation/InquiryModal";
-import { ArrowDown, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 export function Hero01Opening() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -140,12 +140,6 @@ export function Hero01Opening() {
               </div>
             </div>
 
-            {/* Subtle scroll cue at bottom left */}
-            <div className="absolute bottom-8 left-6 sm:left-10 md:left-14 flex items-center gap-3 text-neutral-400 text-[10px] tracking-[0.3em] uppercase">
-              <span className="w-8 h-[1px] bg-neutral-800" />
-              <span>Scroll to immerse</span>
-              <ArrowDown className="w-3 h-3 animate-bounce opacity-60" />
-            </div>
           </motion.div>
 
           {/* Layer 2: Transitional "LET'S DESIGN" (z-30, enters only on scroll toward Hero 02) */}
