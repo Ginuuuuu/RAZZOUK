@@ -3,6 +3,7 @@ import { Poppins, Nunito_Sans, Cedarville_Cursive } from "next/font/google";
 import "./globals.css";
 import { SiteNavigation } from "@/components/navigation/SiteNavigation";
 import { SiteFooter } from "@/components/footer/SiteFooter";
+import { CookieConsent } from "@/components/ui/CookieConsent";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -92,6 +93,7 @@ export default function RootLayout({
           {children}
         </main>
         <SiteFooter />
+        <CookieConsent />
       </body>
     </html>
   );
