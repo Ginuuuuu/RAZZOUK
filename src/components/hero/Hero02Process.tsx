@@ -4,115 +4,95 @@ import React, { useRef } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
 
-interface StepConfig {
+interface StepData {
   word: string;
   note: string;
-  stepNum: string;
   isWine?: boolean;
   start: number;
   end: number;
-  topPct: string; // Distinct vertical row position
 }
 
-const STEPS: StepConfig[] = [
+const STEPS: StepData[] = [
   {
     word: "WE LISTEN",
-    note: "The dialogue begins — understanding intention and anatomy",
-    stepNum: "01",
-    start: 0.00,
-    end: 0.20,
-    topPct: "12%",
+    note: "The dialogue begins — understanding intention, placement, and anatomy",
+    start: 0.0,
+    end: 0.2,
   },
   {
     word: "WE DESIGN",
-    note: "The blueprint emerges — custom composition mapped to muscle",
-    stepNum: "02",
-    start: 0.20,
-    end: 0.40,
-    topPct: "28%",
+    note: "The blueprint emerges — custom composition mapped to natural contours",
+    start: 0.2,
+    end: 0.4,
   },
   {
     word: "WE SKETCH",
-    note: "Graphite meets skin — testing movement, balance, and scale",
-    stepNum: "03",
-    start: 0.40,
-    end: 0.60,
-    topPct: "44%",
+    note: "Graphite meets skin — testing movement, balance, and fine scale",
+    start: 0.4,
+    end: 0.6,
   },
   {
     word: "WE START",
-    note: "Sterile preparation — the quiet focus before the needle",
-    stepNum: "04",
-    start: 0.60,
-    end: 0.80,
-    topPct: "60%",
+    note: "Sterile preparation — the quiet, focused ritual before the needle",
+    start: 0.6,
+    end: 0.8,
   },
   {
     word: "SCRATCHING",
-    note: "The decisive mark — permanence takes root in skin",
-    stepNum: "05",
+    note: "The decisive mark — permanence takes root with artistic mastery",
     isWine: true,
-    start: 0.80,
-    end: 0.94,
-    topPct: "76%",
+    start: 0.8,
+    end: 1.0,
   },
 ];
 
-function StackedWordRow({
+function ProcessStepRow({
   step,
   progress,
 }: {
-  step: StepConfig;
+  step: StepData;
   progress: MotionValue<number>;
 }) {
-  const { word, stepNum, isWine, start, end, topPct } = step;
+  const { word, note, isWine, start, end } = step;
 
-  // Zoom-out: starts HUGE (5.0) at entry, zooms down to 1.0 at end, and stays 1.0 permanently
-  const scale = useTransform(progress, (p: number) => {
-    if (p <= start) return 5.0;
-    if (p >= end) return 1.0;
-    const ratio = (p - start) / (end - start);
-    return 5.0 - ratio * 4.0;
-  });
-
-  // Opacity: 0 before start (strictly invisible). Smoothly enters, then remains 1.0 permanently!
   const opacity = useTransform(progress, (p: number) => {
-    if (p < start) return 0;
-    const fadeInWindow = Math.min(0.04, (end - start) * 0.3);
-    if (p < start + fadeInWindow) {
-      return (p - start) / fadeInWindow;
+    if (p < start) {
+      const dist = start - p;
+      if (dist < 0.08) return 0.35 + (1 - dist / 0.08) * 0.4;
+      return 0.35;
     }
-    return 1.0;
+    if (p <= end) {
+      return 1.0;
+    }
+    return 0.65;
   });
 
-  // Visibility: 'hidden' before start guarantees zero premature render or visual glitching
-  const visibility = useTransform(progress, (p: number) => {
-    return p < start ? "hidden" : "visible";
+  const noteOpacity = useTransform(progress, (p: number) => {
+    if (p < start) return 0.25;
+    if (p <= end) return 1.0;
+    return 0.55;
   });
+
+  const colorClass = isWine
+    ? "text-[#7F1D2D] drop-shadow-[0_0_30px_rgba(127,29,45,0.5)]"
+    : "text-white";
 
   return (
     <motion.div
-      style={{
-        top: topPct,
-        scale,
-        opacity,
-        visibility,
-        transformOrigin: "center center",
-      }}
-      className="absolute left-0 right-0 w-full flex items-center justify-center pointer-events-none select-none px-4"
+      style={{ opacity }}
+      className="space-y-1 transition-all duration-300"
     >
-      <div className="flex items-baseline justify-center w-full max-w-6xl mx-auto">
-        {/* The Word */}
-        <h2
-          className={`font-heading font-black tracking-[-0.03em] uppercase leading-none whitespace-nowrap text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl transition-colors duration-300 ${
-            isWine
-              ? "text-[#7F1D2D] drop-shadow-[0_0_40px_rgba(127,29,45,0.6)]"
-              : "text-white drop-shadow-[0_2px_15px_rgba(0,0,0,0.85)]"
-          }`}
-        >
-          {word}
-        </h2>
-      </div>
+      <h3
+        className={`font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light tracking-[0.14em] uppercase ${colorClass}`}
+      >
+        {word}
+      </h3>
+      <motion.p
+        style={{ opacity: noteOpacity }}
+        className="font-body text-xs sm:text-sm text-neutral-300 font-light tracking-wide leading-relaxed max-w-md"
+      >
+        {note}
+      </motion.p>
     </motion.div>
   );
 }
@@ -125,60 +105,85 @@ export function Hero02Process() {
     offset: ["start start", "end end"],
   });
 
-  // Background image stays visible and subtly scales
-  const bgScale = useTransform(scrollYProgress, [0, 1], [1.05, 1.0]);
-
-
+  // Background image subtly scales from 1.0 to 1.10 for cinematic depth
+  const bgScale = useTransform(scrollYProgress, [0, 1], [1.0, 1.1]);
 
   return (
     <section
       id="process-section"
       ref={containerRef}
       aria-label="The Creation Process"
-      className="relative w-full h-[500vh] bg-black text-white"
+      className="relative w-full h-[250vh] bg-black text-white"
     >
       {/* Sticky Viewport Stage (100vh) */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
-        {/* Layer 0: Background Image (hero02.jpg) — Clearly visible behind typography */}
-        <motion.div
-          style={{ scale: bgScale }}
-          className="absolute inset-0 w-full h-full pointer-events-none z-0"
-        >
-          <Image
-            src="/assets/hero02.jpg"
-            alt="The Craft and Skin Placement"
-            fill
-            sizes="100vw"
-            className="object-cover object-center"
-            quality={90}
-          />
-
-          {/* Layer 1: Semi-transparent cinematic dark overlay (40%) — preserves tattoo visibility */}
-          <div className="absolute inset-0 bg-black/40 pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/50 pointer-events-none" />
-        </motion.div>
-
-        {/* Layer 3: Studio Section Watermark (Top Left) */}
-        <div className="absolute top-8 sm:top-10 left-6 sm:left-10 md:left-14 z-30 flex items-center gap-3 text-neutral-400 text-[10px] sm:text-xs tracking-[0.3em] uppercase pointer-events-none">
-          <span className="font-accent text-neutral-400 text-lg sm:text-xl">chapter 02</span>
-          <span>·</span>
-          <span>THE PROCESS</span>
-        </div>
-
-
-
-        {/* Layer 2: The Continuous Typographic Stack (All 5 Words) */}
-        <div className="relative z-20 w-full h-full max-w-7xl mx-auto pointer-events-none">
-          {STEPS.map((step) => (
-            <StackedWordRow
-              key={step.word}
-              step={step}
-              progress={scrollYProgress}
+      <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between p-6 sm:p-10 md:p-14 lg:p-20">
+        {/* Layer 0: Background Image (hero02.jpg) — Fully visible and sharp on the right */}
+        <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none z-0">
+          <motion.div
+            style={{
+              scale: bgScale,
+              transformOrigin: "75% 50%",
+            }}
+            className="w-full h-full relative"
+          >
+            <Image
+              src="/assets/hero02.jpg"
+              alt="The Craft and Skin Placement"
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover object-[75%_center] sm:object-[70%_center] md:object-[68%_center] lg:object-right contrast-110"
+              quality={95}
             />
-          ))}
+          </motion.div>
+
+          {/* Subtle natural dark wash over whole image */}
+          <div className="absolute inset-0 bg-black/15 pointer-events-none" />
+
+          {/* Left-side dark gradient to ensure 100% typography contrast over negative space */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/85 to-transparent w-full md:w-3/5 pointer-events-none" />
+
+          {/* Top and bottom vignettes for seamless section continuity */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/60 pointer-events-none" />
         </div>
 
+        {/* Top Header Information */}
+        <div className="relative z-30 flex items-center justify-between w-full">
+          <div className="flex items-center gap-3 text-neutral-400 text-[10px] sm:text-xs tracking-[0.3em] uppercase">
+            <span className="font-accent text-neutral-400 text-lg sm:text-xl">chapter 02</span>
+            <span>·</span>
+            <span className="text-white">THE PROCESS</span>
+          </div>
+
+          <span className="font-accent text-neutral-400 text-lg sm:text-xl hidden sm:inline-block">
+            Step by step
+          </span>
+        </div>
+
+        {/* Editorial Process Progression Stack — Left Aligned Over Gradient */}
+        <div className="relative z-20 max-w-2xl my-auto py-6 space-y-6 sm:space-y-8 pointer-events-auto">
+          <div className="inline-block">
+            <span className="text-[10px] sm:text-[11px] tracking-[0.3em] uppercase text-neutral-400 font-body border-b border-neutral-800 pb-1">
+              FIVE PHASES OF CRAFT
+            </span>
+          </div>
+
+          <div className="space-y-5 sm:space-y-6">
+            {STEPS.map((step) => (
+              <ProcessStepRow
+                key={step.word}
+                step={step}
+                progress={scrollYProgress}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Subtle Bottom Spacer */}
+        <div className="relative z-10" />
       </div>
     </section>
   );
 }
+
+export default Hero02Process;
