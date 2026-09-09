@@ -101,12 +101,7 @@ function StackedWordRow({
       }}
       className="absolute left-0 right-0 w-full flex items-center justify-center pointer-events-none select-none px-4"
     >
-      <div className="flex items-baseline justify-center gap-3 sm:gap-6 w-full max-w-6xl mx-auto">
-        {/* Subtle stage numeral tag */}
-        <span className="font-mono text-[9px] sm:text-xs text-neutral-400 tracking-[0.25em] opacity-60 hidden md:inline-block">
-          {stepNum}
-        </span>
-
+      <div className="flex items-baseline justify-center w-full max-w-6xl mx-auto">
         {/* The Word */}
         <h2
           className={`font-heading font-black tracking-[-0.03em] uppercase leading-none whitespace-nowrap text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl transition-colors duration-300 ${
@@ -117,11 +112,6 @@ function StackedWordRow({
         >
           {word}
         </h2>
-
-        {/* Balance tag */}
-        <span className="font-mono text-[9px] sm:text-xs text-neutral-400 tracking-[0.25em] opacity-60 hidden md:inline-block">
-          {isWine ? "END" : "05"}
-        </span>
       </div>
     </motion.div>
   );
@@ -138,8 +128,7 @@ export function Hero02Process() {
   // Background image stays visible and subtly scales
   const bgScale = useTransform(scrollYProgress, [0, 1], [1.05, 1.0]);
 
-  // Overall section progress bar indicator
-  const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+
 
   return (
     <section
@@ -176,18 +165,7 @@ export function Hero02Process() {
           <span>THE PROCESS</span>
         </div>
 
-        {/* Layer 3: Progress Tracker Bar (Top Right) */}
-        <div className="absolute top-8 sm:top-10 right-6 sm:right-10 md:right-14 z-30 flex items-center gap-3 pointer-events-none">
-          <div className="w-24 sm:w-36 h-[2px] bg-white/20 overflow-hidden rounded-full">
-            <motion.div
-              style={{ width: progressWidth }}
-              className="h-full bg-white"
-            />
-          </div>
-          <span className="text-[10px] font-mono tracking-widest text-neutral-400">
-            SEQUENCE
-          </span>
-        </div>
+
 
         {/* Layer 2: The Continuous Typographic Stack (All 5 Words) */}
         <div className="relative z-20 w-full h-full max-w-7xl mx-auto pointer-events-none">
@@ -200,10 +178,6 @@ export function Hero02Process() {
           ))}
         </div>
 
-        {/* Layer 3: Bottom subtle guidance */}
-        <div className="absolute bottom-6 sm:bottom-8 z-30 text-center w-full text-neutral-400 text-[9px] sm:text-[10px] tracking-[0.25em] uppercase pointer-events-none">
-          Continuous scroll controls velocity
-        </div>
       </div>
     </section>
   );
