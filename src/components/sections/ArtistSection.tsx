@@ -10,11 +10,11 @@ export function ArtistSection() {
     <section
       id="artist"
       aria-label="Resident Artists & Craftsmen"
-      className="relative w-full bg-black text-white py-12 sm:py-16 md:py-20 border-t border-neutral-900 overflow-hidden"
+      className="relative w-full bg-black text-white py-14 sm:py-20 md:py-24 border-t border-neutral-900 overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 md:px-14">
-        {/* Section Header */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-8 sm:mb-10">
+      {/* Section Header with grid container */}
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 md:px-14 mb-8 sm:mb-12">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
           <div className="max-w-2xl">
             <div className="flex items-center gap-3 text-neutral-400 text-[10px] sm:text-xs tracking-[0.3em] uppercase mb-3">
               <span className="font-accent text-neutral-400 text-lg">chapter 06</span>
@@ -37,20 +37,22 @@ export function ArtistSection() {
             <span>DRAG ANY ARTIST FREELY · PAN CANVAS · CLICK TO VIEW PROFILE</span>
           </div>
         </div>
+      </div>
 
-        {/* Freely Movable Rectangular Interactive Artist Canvas */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="relative w-full my-2 sm:my-4"
-        >
-          <ArtistFloatingField images={ARTIST_SPHERE_ITEMS} />
-        </motion.div>
+      {/* Full-bleed Edge-to-Edge Floating Artist Canvas */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, margin: "-40px" }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="relative w-full"
+      >
+        <ArtistFloatingField images={ARTIST_SPHERE_ITEMS} />
+      </motion.div>
 
-        {/* Consultation Callout */}
-        <div className="mt-8 pt-6 border-t border-neutral-900/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-[11px] text-neutral-400 tracking-[0.2em] uppercase font-body font-light">
+      {/* Consultation Callout with grid container */}
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 md:px-14 mt-10 sm:mt-14">
+        <div className="pt-6 border-t border-neutral-900/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-[11px] text-neutral-400 tracking-[0.2em] uppercase font-body font-light">
           <p>Clients may request consultations with specific resident artists or be matched by project scope.</p>
           <a
             href="/#studio"
