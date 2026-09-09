@@ -60,11 +60,11 @@ export function ArtistFloatingField({ images, className = "" }: ArtistFloatingFi
 
     const rect = el.getBoundingClientRect();
     const width = el.offsetWidth || rect.width || (typeof window !== "undefined" ? window.innerWidth : 1440);
-    const height = el.offsetHeight || rect.height || 540;
+    const height = el.offsetHeight || rect.height || 600;
 
     const isMobile = width < 640;
     const isTablet = width >= 640 && width < 1024;
-    const size = isMobile ? 52 : isTablet ? 60 : 66;
+    const size = isMobile ? 62 : isTablet ? 74 : 86;
 
     const count = images.length;
 
@@ -194,7 +194,7 @@ export function ArtistFloatingField({ images, className = "" }: ArtistFloatingFi
         }
 
         // 4. Soft inter-node collision separation (guarantees generous breathing space between avatars)
-        const minGap = width < 640 ? 14 : 26;
+        const minGap = width < 640 ? 16 : 28;
         for (let j = i + 1; j < nodes.length; j++) {
           const other = nodes[j];
           if (other.isDragging) continue;
@@ -368,7 +368,7 @@ export function ArtistFloatingField({ images, className = "" }: ArtistFloatingFi
         onPointerMove={handlePointerMove}
         onPointerDown={handleCanvasPointerDown}
         onPointerUp={handleCanvasPointerUp}
-        className={`relative w-full h-[460px] sm:h-[500px] md:h-[540px] lg:h-[560px] overflow-hidden bg-black select-none cursor-grab active:cursor-grabbing ${className}`}
+        className={`relative w-full h-[520px] sm:h-[560px] md:h-[600px] lg:h-[640px] overflow-hidden bg-black select-none cursor-grab active:cursor-grabbing ${className}`}
         style={{ touchAction: "none" }}
       >
         {/* Subtle Ambient Studio Background Grid */}
@@ -398,7 +398,7 @@ export function ArtistFloatingField({ images, className = "" }: ArtistFloatingFi
               onPointerUp={() => handlePointerUp(img.id, img)}
               onMouseEnter={() => setHoveredId(img.id)}
               onMouseLeave={() => setHoveredId(null)}
-              className="absolute top-0 left-0 cursor-grab active:cursor-grabbing group/avatar transition-shadow duration-300 w-[52px] h-[52px] sm:w-[60px] sm:h-[60px] lg:w-[66px] lg:h-[66px]"
+              className="absolute top-0 left-0 cursor-grab active:cursor-grabbing group/avatar transition-shadow duration-300 w-[62px] h-[62px] sm:w-[74px] sm:h-[74px] lg:w-[86px] lg:h-[86px]"
               style={{
                 willChange: "transform",
               }}
@@ -436,10 +436,6 @@ export function ArtistFloatingField({ images, className = "" }: ArtistFloatingFi
             </div>
           ))}
 
-        {/* Subtle Canvas Corner Coordinates Watermark */}
-        <div className="absolute bottom-4 left-6 sm:left-10 md:left-14 pointer-events-none text-[9px] font-mono tracking-[0.25em] text-neutral-400 uppercase">
-          RAZZOUK ATELIER COLLECTIVE · {images.length} ACTIVE RESIDENTS & CRAFTSMEN
-        </div>
       </div>
 
       {/* Profile Detail Spotlight Modal */}

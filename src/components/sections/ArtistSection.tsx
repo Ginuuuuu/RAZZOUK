@@ -49,20 +49,6 @@ export function ArtistSection() {
       >
         <ArtistFloatingField images={ARTIST_SPHERE_ITEMS} />
       </motion.div>
-
-      {/* Consultation Callout with grid container */}
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 md:px-14 mt-8 sm:mt-10">
-        <div className="pt-6 border-t border-neutral-900/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-[11px] text-neutral-400 tracking-[0.2em] uppercase font-body font-light">
-          <p>Clients may request consultations with specific resident artists or be matched by project scope.</p>
-          <a
-            href="/#studio"
-            className="inline-flex items-center gap-2 text-white hover:text-neutral-300 transition-colors text-[10px] tracking-[0.25em] uppercase"
-          >
-            <span>LEARN ABOUT THE ATELIER</span>
-            <span>→</span>
-          </a>
-        </div>
-      </div>
     </section>
   );
 }
