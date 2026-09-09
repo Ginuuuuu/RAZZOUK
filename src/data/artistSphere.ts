@@ -1,5 +1,3 @@
-import { ImageData } from "@/components/ui/SphereImageGrid";
-
 export interface EmployeeProfile {
   id: string;
   name: string;
@@ -7,6 +5,14 @@ export interface EmployeeProfile {
   specialty: string;
   image: string;
   bio: string;
+}
+
+export interface ImageData {
+  id: string;
+  src: string;
+  alt: string;
+  title?: string;
+  description?: string;
 }
 
 export const EMPLOYEES: EmployeeProfile[] = [
@@ -114,9 +120,193 @@ export const EMPLOYEES: EmployeeProfile[] = [
     image: "/assets/employee/emp-13.jpg",
     bio: "Conducting undisturbed one-on-one sessions with uncompromising sterile protocol and needle control.",
   },
+  {
+    id: "emp-14",
+    name: "Viktor Romanov",
+    role: "Dark Chiaroscuro & Realism Resident",
+    specialty: "HIGH-CONTRAST CHIAROSCURO · GRAPHITE",
+    image: "/assets/employee/emp-14.jpg",
+    bio: "Master of dramatic Renaissance light and shadow, textured charcoal simulation, and anatomical portraiture.",
+  },
+  {
+    id: "emp-15",
+    name: "Amara Solis",
+    role: "Sacred Geometry & Dotwork Artist",
+    specialty: "DOTWORK MANDALAS · FREELINE FLOW",
+    image: "/assets/employee/emp-15.jpg",
+    bio: "Stippled needle craft creating hypnotic concentric geometry and sacred ceremonial bodily motifs.",
+  },
+  {
+    id: "emp-16",
+    name: "Kai Takahashi",
+    role: "Contemporary Irezumi Resident",
+    specialty: "HORIMONO HERITAGE · WATER & DRAGON SLEEVES",
+    image: "/assets/employee/emp-16.jpg",
+    bio: "Translating traditional Edo-period ukiyo-e motifs into modern tailored sleeve compositions.",
+  },
+  {
+    id: "emp-17",
+    name: "Seraphina Holt",
+    role: "Calligraphy & Abstract Brushwork Artist",
+    specialty: "BRUSHSTROKE KANJI · GESTURAL INK",
+    image: "/assets/employee/emp-17.jpg",
+    bio: "Expressive spontaneous ink technique capturing kinetic movement and breath along spinal and arm curvatures.",
+  },
+  {
+    id: "emp-18",
+    name: "Mateo Morales",
+    role: "Chicano & Fine Black-and-Grey Tattooist",
+    specialty: "SOFT SHADING · RELIGIOUS ICONOGRAPHY",
+    image: "/assets/employee/emp-18.jpg",
+    bio: "Renowned for silky grey-wash gradients, intricate drapery folds, and timeless sacred iconography.",
+  },
+  {
+    id: "emp-19",
+    name: "Soraya Haddad",
+    role: "Levantine Ornamentalist & Woodblock Resident",
+    specialty: "SACRED WOODBLOCK PRINTS · HISTORIC SEALS",
+    image: "/assets/employee/emp-19.jpg",
+    bio: "Guardian of historic Razzouk pilgrim stamp motifs, carved olive-wood transfers, and ancient Coptic crosses.",
+  },
+  {
+    id: "emp-20",
+    name: "Oliver Sterling",
+    role: "Atelier Goldsmith & Custom Piercing Jeweller",
+    specialty: "18K SOLID GOLD · HAND-CHISELED BEZELS",
+    image: "/assets/employee/emp-20.jpg",
+    bio: "Hand-forging artisanal gold studs, clickers, and bezel settings crafted specifically for body piercings.",
+  },
+  {
+    id: "emp-21",
+    name: "Zoe Lindqvist",
+    role: "Minimalist Linear & Typographic Artist",
+    specialty: "ARCHITECTURAL LINES · MINIMAL RUNES",
+    image: "/assets/employee/emp-21.jpg",
+    bio: "Nordic minimalism meeting architectural geometry with razor-sharp single-needle contour work.",
+  },
+  {
+    id: "emp-22",
+    name: "Gabriel Santos",
+    role: "Surrealist Narrative Tattooist",
+    specialty: "ESCHERIAN OPTICALS · METAMORPHOSIS",
+    image: "/assets/employee/emp-22.jpg",
+    bio: "Creating mind-bending dreamscapes, impossible perspective architecture, and surreal bodily illusions.",
+  },
+  {
+    id: "emp-23",
+    name: "Freja Lind",
+    role: "Botanical Flora & Insect Specialist",
+    specialty: "HERBARIUM ETCHINGS · BOTANICAL MONOGRAPHS",
+    image: "/assets/employee/emp-23.jpg",
+    bio: "Reproducing 18th-century scientific botanical etchings with microscopic needle resolution.",
+  },
+  {
+    id: "emp-24",
+    name: "Tariq Mansour",
+    role: "Large-Scale Torso & Backpiece Architect",
+    specialty: "MONUMENTAL TORSO · AXIAL SYMMETRY",
+    image: "/assets/employee/emp-24.jpg",
+    bio: "Designing holistic, uninterrupted body suites requiring meticulous multi-month session planning.",
+  },
+  {
+    id: "emp-25",
+    name: "Roxanne Bell",
+    role: "Graphic Cyberpunk & Circuitry Resident",
+    specialty: "GLITCH AESTHETICS · CYBERNETIC LINEWORK",
+    image: "/assets/employee/emp-25.jpg",
+    bio: "Futuristic technical blueprints, cybernetic line contours, and high-contrast digital artifacts.",
+  },
+  {
+    id: "emp-26",
+    name: "Nico Valenti",
+    role: "Classic Flash Archivist & Tattooist",
+    specialty: "HERITAGE REPRODUCTIONS · VINTAGE ACETATE",
+    image: "/assets/employee/emp-26.jpg",
+    bio: "Preserving early 20th-century flash heritage with bold spit-shaded tones and rich black borders.",
+  },
+  {
+    id: "emp-27",
+    name: "Iris Chen",
+    role: "Chromatic Pastel & Aura Tattooist",
+    specialty: "GRADIENT AURAS · SOFT CHROMATIC MISTS",
+    image: "/assets/employee/emp-27.jpg",
+    bio: "Pioneering borderless gradient inks that mirror atmospheric light and delicate silk washes.",
+  },
+  {
+    id: "emp-28",
+    name: "Rowan Fraser",
+    role: "Celtic Knotwork & Knot Architecture",
+    specialty: "INSULAR ILLUMINATION · INTERLACE KNOTS",
+    image: "/assets/employee/emp-28.jpg",
+    bio: "Endless interlace knotwork inspired by ancient insular manuscripts, executed with flawless geometry.",
+  },
+  {
+    id: "emp-29",
+    name: "Camila Reyes",
+    role: "Micro-Portraiture & Miniature Needlecraft",
+    specialty: "THUMBNAIL OIL EFFECT · ULTRA-FINE DETAILS",
+    image: "/assets/employee/emp-29.jpg",
+    bio: "Miniature canvas replicas and museum-grade masterwork paintings scaled to coin dimensions.",
+  },
+  {
+    id: "emp-30",
+    name: "Leonidas Karras",
+    role: "Greek Classical Sculpture & Marble Shading",
+    specialty: "MARBLE DRAPERY · CLASSICAL STATUARY",
+    image: "/assets/employee/emp-30.jpg",
+    bio: "Channeling Hellenistic marble sculpting techniques into translucent grey washes on living skin.",
+  },
+  {
+    id: "emp-31",
+    name: "Yara El-Masri",
+    role: "Sacred Calligraphy & Geometric Kufic Artist",
+    specialty: "SQUARE KUFIC · SACRED GEOMETRIC TEXT",
+    image: "/assets/employee/emp-31.jpg",
+    bio: "Harmonizing sacred ancient typography with proportional anatomical placement.",
+  },
+  {
+    id: "emp-32",
+    name: "Sebastian Cole",
+    role: "Dermal Piercing & Surface Anchor Specialist",
+    specialty: "SURFACE ANCHORS · DERMAL ACCENTS",
+    image: "/assets/employee/emp-32.jpg",
+    bio: "Specialist in low-profile micro-dermal anchors, chest sternum curation, and flush surface integration.",
+  },
+  {
+    id: "emp-33",
+    name: "Naomi Bishop",
+    role: "Sketchbook & Concept Charcoal Resident",
+    specialty: "CROSS-HATCHING · GRAPHITE ETCHING",
+    image: "/assets/employee/emp-33.jpg",
+    bio: "Capturing dynamic anatomical sketches, visible pencil construction lines, and gesture drawings.",
+  },
+  {
+    id: "emp-34",
+    name: "Arman Demir",
+    role: "Heavy Blast-Over & Dark Abstract Artist",
+    specialty: "COVER-UP RE-ARCHITECTURE · SOLID BLACK",
+    image: "/assets/employee/emp-34.jpg",
+    bio: "Transforming existing tattoos into powerful modern negative-space blackwork compositions.",
+  },
+  {
+    id: "emp-35",
+    name: "Lucia Bertolli",
+    role: "Baroque Filigree & Gold Ornament Inker",
+    specialty: "GILDED EFFECTS · FLORENTINE GOLD LEAF",
+    image: "/assets/employee/emp-35.jpg",
+    bio: "Illuminating body contours with baroque filigree scrollwork, warm ochre hues, and radiant accents.",
+  },
+  {
+    id: "emp-36",
+    name: "Elias Razzouk",
+    role: "Master Craftsman & Custodian of Tradition",
+    specialty: "HERITAGE PILGRIM STAMPS · SACRED ARTIFACTS",
+    image: "/assets/employee/emp-36.jpg",
+    bio: "Carrying forward centuries of unbroken family tradition with historic olive-wood blocks and ancestral inks.",
+  },
 ];
 
-// Map all 13 employee portraits directly into the 3D SphereImageData
+// Map all 36 employee portraits into the interactive field items
 export const ARTIST_SPHERE_ITEMS: ImageData[] = EMPLOYEES.map((emp) => ({
   id: emp.id,
   src: emp.image,
