@@ -14,9 +14,9 @@ export function Hero05Piercing() {
     offset: ["start start", "end end"],
   });
 
-  // Zooms OUT continuously with jewelry as the unwavering anchor:
-  // Starts macro on the crystal solitaire (2.6x), zooms out to full anatomical composition (1.0x)
-  const scale = useTransform(scrollYProgress, [0, 0.25, 0.55, 0.8, 1], [2.6, 2.0, 1.5, 1.18, 1.0]);
+  // Zooms continuously OUT: starts at 2.5x, reaches full composition at 1.0x
+  // Jewelry remains the unwavering anchor
+  const scale = useTransform(scrollYProgress, [0, 1], [2.5, 1.0]);
 
   // Typography reveal
   const textOpacity = useTransform(scrollYProgress, [0, 0.2, 0.85, 1], [0.5, 1, 1, 0.85]);
@@ -26,7 +26,7 @@ export function Hero05Piercing() {
     <section
       ref={containerRef}
       aria-label="Belly Piercing Exhibition"
-      className="relative w-full h-[260vh] bg-black text-white"
+      className="relative w-full h-[250vh] bg-black text-white"
     >
       {/* Sticky Viewport Stage */}
       <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between p-6 sm:p-10 md:p-14 lg:p-20">
@@ -62,16 +62,16 @@ export function Hero05Piercing() {
             </span>
             <span className="text-neutral-400">·</span>
             <span className="font-body text-[10px] sm:text-xs text-neutral-300 tracking-[0.25em] uppercase">
-              PIERCING / COMPLETED WORK
+              PRECISION PIERCING
             </span>
           </div>
 
           <span className="font-accent text-neutral-400 text-lg sm:text-xl hidden sm:inline-block">
-            Architectural accuracy
+            Architectural anatomy
           </span>
         </div>
 
-        {/* Editorial Content Block — Precision Placement */}
+        {/* Editorial Content Block — Center Left */}
         <motion.div
           style={{ opacity: textOpacity, y: textY }}
           className="relative z-10 max-w-2xl my-auto py-8 pointer-events-auto"
@@ -79,7 +79,7 @@ export function Hero05Piercing() {
           <div className="space-y-4 sm:space-y-6">
             <div className="inline-block">
               <span className="text-[11px] tracking-[0.3em] uppercase text-[#E5E5E5] font-body border-b border-neutral-700 pb-1">
-                FINE JEWELLERY ATELIER
+                JEWELLERY & ANATOMY
               </span>
             </div>
 
@@ -98,7 +98,7 @@ export function Hero05Piercing() {
                 href="/works/belly-piercing"
                 className="group inline-flex items-center gap-4 text-xs sm:text-sm tracking-[0.25em] uppercase font-medium text-white hover:text-neutral-300 transition-colors py-2 border-b border-white hover:border-neutral-400"
               >
-                <span>SEE THE WORKS</span>
+                <span>VIEW PIERCING ARCHIVE</span>
                 <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-2" />
               </Link>
             </div>
@@ -108,16 +108,16 @@ export function Hero05Piercing() {
         {/* Bottom Metadata Panel */}
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4 pt-6 border-t border-white/10 text-[10px] tracking-[0.25em] uppercase text-neutral-400">
           <div>
-            <span className="block text-neutral-400">HARDWARE</span>
-            <span className="text-white">ASTM F-136 Implant Grade Titanium</span>
+            <span className="block text-neutral-400">MATERIAL</span>
+            <span className="text-white">ASTM-F136 Implant Grade Titanium</span>
           </div>
           <div>
             <span className="block text-neutral-400">GEMSTONE</span>
-            <span className="text-white">Hand-Polished Synthetic Zirconia</span>
+            <span className="text-white">Bezel-Set Synthetic Cubic Zirconia</span>
           </div>
           <div className="text-left sm:text-right">
-            <span className="block text-neutral-400">ENVIRONMENT</span>
-            <span className="text-white">Medical-Grade Aseptic Studio</span>
+            <span className="block text-neutral-400">CALIBRATION</span>
+            <span className="text-white">Custom Measured Post Length</span>
           </div>
         </div>
       </div>
